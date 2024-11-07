@@ -36,7 +36,10 @@
     "react-native-screens": "3.31.1",
     "react-native-vector-icons": "^10.2.0",
     "react-native-web": "^0.19.12",
-    "react-navigation": "^5.0.0"
+    "react-navigation": "^5.0.0",
+    "expo-constants": "~16.0.2",
+    "react-native-svg": "15.2.0",
+    "firebase": "9.6.7" 
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
