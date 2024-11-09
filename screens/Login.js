@@ -1,6 +1,6 @@
-import { Alert, StyleSheet, Text, View,TouchableOpacity, ImageBackground } from "react-native";
+import { Alert, StyleSheet, Text, View,TouchableOpacity, ImageBackground, TextInput } from "react-native";
 import React, { useState } from "react";
-import { TextInput } from "react-native-gesture-handler";
+import "react-native-gesture-handler";
 import { database } from "../src/config/fb";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 const auth = getAuth();
@@ -34,14 +34,14 @@ const Login = (props) => {
         <View style={styles.InputTexts}>
           <View style={styles.inputContainer}>
             <Icon name="mail" size={20} color="#888" style={styles.icon} />
-            <TextInput style={styles.input} placeholder="email" onChangeText={(text)=>setEmail(text)} />
+            <TextInput style={styles.input} placeholder="Email" onChangeText={(text)=>setEmail(text)} />
           </View>
           <View style={styles.inputContainer}>
             <Icon name="lock" size={20} color="#888" style={styles.icon} />
-            <TextInput style={styles.input} placeholder="password" onChangeText={(text)=>setPassword(text)} secureTextEntry={true}/>
+            <TextInput style={styles.input} placeholder="Password" onChangeText={(text)=>setPassword(text)} secureTextEntry={true}/>
           </View>
           <TouchableOpacity style={styles.btnSignIn} onPress={logueo}>
-            <Text style={styles.btnText}>INICIAR SESION</Text>
+            <Text style={styles.btnText}>INICIAR SESIóN</Text>
           </TouchableOpacity>
           <Text style={styles.txtIDKPassword}>
             ¿Has olvidado tu contraseña?
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 80,
   },
   textInicio: {
-    marginTop: 10,
+    marginTop: 30,
     fontSize: 35,
     fontWeight: "bold",
     color: "#064557",
