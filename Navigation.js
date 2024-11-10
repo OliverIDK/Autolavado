@@ -19,7 +19,7 @@ const Stack = createStackNavigator();
           headerShown: false
           
         }}/>
-        <Stack.Screen name="Home" component={TabGroup}
+        <Stack.Screen name="TapGroup" component={TabGroup}
         options={{
           headerShown:false
         }} />
