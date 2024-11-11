@@ -1,4 +1,4 @@
-import { Alert, StyleSheet, Text, View,TouchableOpacity, ImageBackground, TextInput } from "react-native";
+import { Alert, StyleSheet, Text, View,TouchableOpacity, ImageBackground, TextInput} from "react-native";
 import React, { useState } from "react";
 import "react-native-gesture-handler";
 import { database } from "../src/config/fb";
@@ -20,8 +20,9 @@ const Login = (props) => {
       Alert.alert("Error", "El usuario o la contraseña son incorrectos");
     }
   };
+  
   return (
-    <View style={styles.container}>
+    <View style={styles.container}> 
       <View style={styles.encabezado}>
         <ImageBackground
           style={styles.logo}
@@ -49,6 +50,7 @@ const Login = (props) => {
         </View>
       </View>
     </View>
+  
   );
 };
 
@@ -81,7 +83,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 80,
   },
   textInicio: {
-    marginTop: 30,
+    marginTop: 50,
     fontSize: 35,
     fontWeight: "bold",
     color: "#064557",
@@ -93,14 +95,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   inputContainer: {
-    flexDirection: "row", // Los elementos dentro de este contenedor estarán en fila
-    alignItems: "center", // Centra verticalmente el ícono y el input
+    flexDirection: "row",
+    alignItems: "center",
     borderWidth: 1,
     borderColor: "#ccc",
     borderRadius: 8,
     margin: 15,
     width: 300,
     height: 50,
+    gap: 5
   },
   input: {
     flex: 1,
