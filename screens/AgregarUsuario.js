@@ -1,29 +1,38 @@
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert } from 'react-native';
 import React, { useState } from 'react';
-import { database } from '../src/config/fb';
+import { database, auth } from '../src/config/fb';
 import { collection, addDoc } from 'firebase/firestore';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { useNavigation } from '@react-navigation/native';
 
-const AgregarUsuario = (props) => {
+const AgregarUsuario = () => {
   const navigation = useNavigation();
   
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [rol, setRol] = useState('');
+  const [password, setPassword] = useState('');
 
   const handleAddUser = async () => {
-    if (!name || !email || !rol) {
+    if (!name || !email || !rol || !password) {
       Alert.alert("Error", "Todos los campos son requeridos");
       return;
     }
 
     try {
+      // Crear el usuario en Firebase Auth y obtener el user ID
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const userId = userCredential.user.uid;
+
+      // Crear la referencia a la colección 'usuarios' en Firestore
       const userRef = collection(database, 'usuarios');
       await addDoc(userRef, {
         name: name,
         email: email,
         rol: rol,
+        ida: userId // Guardar el ID de autenticación en el campo 'ida'
       });
+
       Alert.alert("Éxito", "Usuario creado correctamente");
       navigation.goBack();
     } catch (error) {
@@ -54,6 +63,13 @@ const AgregarUsuario = (props) => {
         placeholder="Rol"
         value={rol}
         onChangeText={setRol}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Contraseña"
+        secureTextEntry
+        value={password}
+        onChangeText={setPassword}
       />
 
       <TouchableOpacity style={styles.btnAdd} onPress={handleAddUser}>
