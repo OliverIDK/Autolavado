@@ -1,4 +1,11 @@
-import { StyleSheet, Text, View, TouchableOpacity, Alert } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Alert,
+  ImageBackground,
+} from "react-native";
 import React, { useState } from "react";
 import {
   Menu,
@@ -74,6 +81,12 @@ const Producto = ({ id, producto, cantidad: initialCantidad, medida }) => {
   return (
     <View style={styles.container}>
       <View style={styles.productInfo}>
+        <ImageBackground
+          style={styles.producto1}
+          source={require("../src/Assets/product1.png")}
+          resizeMode="contain"
+        />
+        <View style={styles.linea}></View>
         <View style={styles.textContainer}>
           <Text style={styles.productoText}>{producto}</Text>
           <View style={styles.cantidadContainer}>
@@ -87,21 +100,21 @@ const Producto = ({ id, producto, cantidad: initialCantidad, medida }) => {
               <AntDesign name="plus" size={16} color="#333" />
             </TouchableOpacity>
             {editing && (
-            <View style={styles.editOptions}>
-              <TouchableOpacity
-                onPress={confirmChange}
-                style={styles.confirmButton}
-              >
-                <AntDesign name="check" size={20} color="green" />
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={cancelChange}
-                style={styles.cancelButton}
-              >
-                <AntDesign name="close" size={20} color="red" />
-              </TouchableOpacity>
-            </View>
-          )}
+              <View style={styles.editOptions}>
+                <TouchableOpacity
+                  onPress={confirmChange}
+                  style={styles.confirmButton}
+                >
+                  <AntDesign name="check" size={20} color="green" />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={cancelChange}
+                  style={styles.cancelButton}
+                >
+                  <AntDesign name="close" size={20} color="red" />
+                </TouchableOpacity>
+              </View>
+            )}
           </View>
         </View>
         <Menu>
@@ -159,6 +172,18 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
+  producto1:{
+    width: 48,
+    height: 90,
+    paddingLeft: 2,
+  },
+  linea: {
+    width: 1,
+    height: 80,
+    backgroundColor: '#ddd',
+    marginHorizontal: 20,
+   
+  },
   textContainer: {
     flex: 1,
   },
@@ -196,6 +221,7 @@ const styles = StyleSheet.create({
   editOptions: {
     flexDirection: "row",
     marginTop: 5,
+    marginLeft: 10,
   },
   confirmButton: {
     marginRight: 10,
