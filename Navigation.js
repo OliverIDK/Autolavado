@@ -25,6 +25,7 @@ function Taps(){
         elevation: 0, 
         shadowOpacity: 0,
         borderBottomWidth: 0,
+        
       },
       headerStyle: {
         shadowOpacity: 0,
@@ -33,7 +34,7 @@ function Taps(){
       headerShown: false,
     }}>
       <MaterialTaps.Screen name="Servicios" component={Servicios}/>
-      <MaterialTaps.Screen name="Tipo" component={TipoVehiculo}/>
+      <MaterialTaps.Screen name="Tipo" component={TipoVehiculo} options={{title:"Vehiculos"}}/>
     </MaterialTaps.Navigator>
   )
 }
@@ -121,7 +122,7 @@ function TabGroup() {
     >
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Usuarios" component={Usuarios} />
-      <Tab.Screen name="Tabs" component={Taps} options={{title:"Hola"}} />
+      <Tab.Screen name="Tabs" component={Taps} options={{title:""}} />
       <Tab.Screen name="Inventario" component={Inventario} />
       <Tab.Screen name="Reporte" component={Reporte} />
     </Tab.Navigator>

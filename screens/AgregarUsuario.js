@@ -20,17 +20,14 @@ const AgregarUsuario = () => {
     }
 
     try {
-      // Crear el usuario en Firebase Auth y obtener el user ID
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const userId = userCredential.user.uid;
-
-      // Crear la referencia a la colección 'usuarios' en Firestore
       const userRef = collection(database, 'usuarios');
       await addDoc(userRef, {
         name: name,
         email: email,
         rol: rol,
-        ida: userId // Guardar el ID de autenticación en el campo 'ida'
+        ida: userId,
       });
 
       Alert.alert("Éxito", "Usuario creado correctamente");
@@ -44,7 +41,6 @@ const AgregarUsuario = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Agregar Usuario</Text>
-
       <TextInput
         style={styles.input}
         placeholder="Nombre"

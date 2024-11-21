@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Alert } from "react-native";
+import { StyleSheet, Text, View, Alert,Image } from "react-native";
 import React from "react";
 import { database } from "../src/config/fb";
 import { deleteDoc, doc } from "firebase/firestore";
@@ -12,6 +12,18 @@ import { AntDesign, Entypo } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 const Usuario = ({ id, name, rol, email, onEdit }) => {
   const navigation = useNavigation();
+
+  const ImageRol = (rol) =>{
+    let Imagen;
+    
+    if (rol === "Encargado"){
+      Imagen = require("../assets/encargado.png");
+    }else{
+      Imagen = require("../assets/empleado.png");
+    }
+    return Imagen;
+  };
+
   const handleDelete = async () => {
     Alert.alert(
       "Confirmar eliminación",
@@ -40,11 +52,11 @@ const Usuario = ({ id, name, rol, email, onEdit }) => {
       { cancelable: true }
     );
   };
-
+const imagenUsuario = ImageRol(rol);
   return (
     <View style={styles.celdas}>
       <View style={styles.leftContainer}>
-        <Entypo name="user" size={25} color="#888" style={styles.icon} />
+        <Image source={imagenUsuario} style={styles.iconUser}></Image>
         <View style={styles.textContain}>
           <Text style={styles.txtName}>{name}</Text>
           <Text style={styles.txtRol}>{rol}</Text>
@@ -109,6 +121,13 @@ const styles = StyleSheet.create({
   icon: {
     padding: 10,
   },
+  iconUser: {
+    width:35,
+    height:35,
+    margin:10,
+  },
+  
+
   txtName: {
     fontSize: 15,
     fontWeight: "bold",
