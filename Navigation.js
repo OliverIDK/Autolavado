@@ -12,8 +12,31 @@ import AgregarUsuario from "./screens/AgregarUsuario";
 import AgregarProducto from "./screens/AgregarProducto";
 import EditarUsuario from "./screens/EditarUsuario";
 import EditarProducto from "./screens/EditarProducto";
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import TipoVehiculo from "./screens/TipoVehiculo";
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
+const MaterialTaps = createMaterialTopTabNavigator();
+function Taps(){
+  return(
+    <MaterialTaps.Navigator 
+    screenOptions={{
+      tabBarStyle: {
+        elevation: 0, 
+        shadowOpacity: 0,
+        borderBottomWidth: 0,
+      },
+      headerStyle: {
+        shadowOpacity: 0,
+        elevation: 0,
+      },
+      headerShown: false,
+    }}>
+      <MaterialTaps.Screen name="Servicios" component={Servicios}/>
+      <MaterialTaps.Screen name="Tipo" component={TipoVehiculo}/>
+    </MaterialTaps.Navigator>
+  )
+}
 function MyStack() {
   return (
     <Stack.Navigator>
@@ -85,7 +108,7 @@ function TabGroup() {
             iconName = "home";
           } else if (route.name == "Usuarios") {
             iconName = "users";
-          } else if (route.name == "Servicios") {
+          } else if (route.name == "Tabs") {
             iconName = "inbox";
           } else if (route.name == "Inventario") {
             iconName = "clipboard";
@@ -98,7 +121,7 @@ function TabGroup() {
     >
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Usuarios" component={Usuarios} />
-      <Tab.Screen name="Servicios" component={Servicios} />
+      <Tab.Screen name="Tabs" component={Taps} options={{title:"Hola"}} />
       <Tab.Screen name="Inventario" component={Inventario} />
       <Tab.Screen name="Reporte" component={Reporte} />
     </Tab.Navigator>
