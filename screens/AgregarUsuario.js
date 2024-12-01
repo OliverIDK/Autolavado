@@ -4,18 +4,40 @@ import { database, auth } from '../src/config/fb';
 import { collection, addDoc } from 'firebase/firestore';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { useNavigation } from '@react-navigation/native';
+import DropDownPicker from 'react-native-dropdown-picker';
 
 const AgregarUsuario = () => {
   const navigation = useNavigation();
   
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [rol, setRol] = useState('');
+  const [rol, setRol] = useState(null);
   const [password, setPassword] = useState('');
+
+  const [open, setOpen] = useState(false);
+  const [items, setItems] = useState([
+    { label: 'Encargado', value: 'Encargado' },
+    { label: 'Empleado', value: 'Empleado' },
+  ]);
+
+  const isValidEmail = (email) => {
+    const regex = /\S+@\S+\.\S+/;
+    return regex.test(email);
+  };
 
   const handleAddUser = async () => {
     if (!name || !email || !rol || !password) {
       Alert.alert("Error", "Todos los campos son requeridos");
+      return;
+    }
+
+    if (!isValidEmail(email)) {
+      Alert.alert("Error", "Por favor ingresa un correo electrónico válido");
+      return;
+    }
+
+    if (password.length < 6) {
+      Alert.alert("Error", "La contraseña debe tener al menos 6 caracteres");
       return;
     }
 
@@ -54,11 +76,17 @@ const AgregarUsuario = () => {
         value={email}
         onChangeText={setEmail}
       />
-      <TextInput
-        style={styles.input}
-        placeholder="Rol"
-        value={rol}
-        onChangeText={setRol}
+      <DropDownPicker
+        open={open}  
+        value={rol}  
+        items={items}  
+        setOpen={setOpen}  
+        setValue={setRol}  
+        setItems={setItems}
+        placeholder="Selecciona un rol"
+        containerStyle={{ marginBottom: 15, width: '100%' }} 
+        style={{ borderColor: '#ccc', borderWidth: 1, borderRadius: 8 }} 
+        dropDownStyle={{ borderColor: '#ccc', borderWidth: 1, borderRadius: 8 }} 
       />
       <TextInput
         style={styles.input}
@@ -67,7 +95,6 @@ const AgregarUsuario = () => {
         value={password}
         onChangeText={setPassword}
       />
-
       <TouchableOpacity style={styles.btnAdd} onPress={handleAddUser}>
         <Text style={styles.btnText}>Crear</Text>
       </TouchableOpacity>

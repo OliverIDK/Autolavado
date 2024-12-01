@@ -49,8 +49,15 @@ function MyStack() {
         }}
       />
       <Stack.Screen
-        name="TapGroup"
-        component={TabGroup}
+        name="TabGroupAdmin"
+        component={TabGroupAdmin}
+        options={{
+          headerShown: false,
+        }}
+      />
+            <Stack.Screen
+        name="TabGroupEmpleado"
+        component={TabGroupEmpleado}
         options={{
           headerShown: false,
         }}
@@ -95,7 +102,7 @@ function MyStack() {
   );
 }
 
-function TabGroup() {
+function TabGroupAdmin() {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -125,6 +132,30 @@ function TabGroup() {
       <Tab.Screen name="Tabs" component={Taps} options={{title:""}} />
       <Tab.Screen name="Inventario" component={Inventario} />
       <Tab.Screen name="Reporte" component={Reporte} />
+    </Tab.Navigator>
+  );
+}
+function TabGroupEmpleado() {
+  return (
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        tabBarShowLabel: false,
+        animation: "shift",
+        headerShadowVisible: false,
+        tabBarActiveTintColor: "#144E78",
+        tabBarIcon: ({ color, focused, size }) => {
+          let iconName;
+          if (route.name == "Home") {
+            iconName = "home";
+          } else if (route.name == "Inventario") {
+            iconName = "clipboard";
+          }
+          return <Icon name={iconName} color={color} size={size} />;
+        },
+      })}
+    >
+      <Tab.Screen name="Home" component={Home} />
+      <Tab.Screen name="Inventario" component={Inventario} />
     </Tab.Navigator>
   );
 }
