@@ -1,40 +1,58 @@
-import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, ImageBackground } from 'react-native';
 import React from 'react';
 
-const Servicio = () => {
+const Servicio = ({ servicios }) => {
     return (
         
-        <TouchableOpacity style={styles.btnService}>
-            <Image style={styles.iconService} source={require("../assets/iconosServicios/carwash.png")} />
-            <Text style={styles.txtService}>Lavado Externo</Text>
+        <TouchableOpacity style={[styles.card, styles.cardSelected]}>
+            <ImageBackground source={ servicios.image } resizeMode='contain' style={styles.image}></ImageBackground>
+            <Text style={[styles.label, styles.labelSelected]}>{ servicios.name }</Text>
         </TouchableOpacity>
-        
-       
+
     );
 };
 
 export default Servicio;
 
 const styles = StyleSheet.create({
-    btnService: {
-        width: '45%',           
+    // container: {
+    //     marginBottom: 20,
+    //   },
+    //   title: {
+    //     fontSize: 16,
+    //     fontWeight: 'bold',
+    //     marginBottom: 10,
+    //   },
+    //   scroll: {
+    //     flexDirection: 'row',
+    //   },
+      card: {
+        width: 150,
         height: 150,
-        backgroundColor: 'white',
-        borderRadius: 15,
         alignItems: 'center',
         justifyContent: 'center',
-        borderColor: '#ccc',
+        paddingVertical: 15,
+        paddingHorizontal: 20,
+        marginRight: 10,
+        borderRadius: 10,
         borderWidth: 1,
-        marginBottom: 15,
-        marginRight:7,
-        marginLeft:12,
-    },
-    iconService: {
+        borderColor: '#E0E0E0',
+        backgroundColor: '#FFFFFF',
+      },
+      cardSelected: {
+        backgroundColor: '#007BFF',
+        borderColor: '#0056b3',
+      },
+      image: {
         width: 80,
-        height: 80,
-    },
-    txtService: {
-        marginTop: 10,
-        textAlign: 'center',
-    },
+        height: 80
+      },
+      label: {
+        marginTop: 5,
+        fontSize: 14,
+        color: '#333',
+      },
+      labelSelected: {
+        color: '#FFFFFF',
+      },
 });
