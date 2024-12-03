@@ -35,7 +35,7 @@ const Usuarios = () => {
       <View style={styles.header}>
         <View style={styles.inputContainer}>
           <Icon name="magnifying-glass" size={20} color="#888" style={styles.icon} />
-          <TextInput style={styles.input} placeholder="Buscar usuario" />
+          <TextInput style={styles.input} placeholder="Buscar empleado" />
         </View>
       </View>
       <View style={styles.body}>
@@ -100,8 +100,6 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     backgroundColor: 'white',
-    borderTopWidth: 1,
-    borderColor: '#ccc',
   },
   btnAdd: {
     alignItems: 'center',

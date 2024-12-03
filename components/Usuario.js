@@ -1,149 +1,110 @@
-import { StyleSheet, Text, View, Alert,Image } from "react-native";
 import React from "react";
-import { database } from "../src/config/fb";
-import { deleteDoc, doc } from "firebase/firestore";
+import { StyleSheet, Alert, Image, View } from "react-native";
+import { Card, Avatar, IconButton, Divider, Text } from "react-native-paper";
 import {
   Menu,
   MenuOptions,
   MenuOption,
   MenuTrigger,
 } from "react-native-popup-menu";
-import { AntDesign, Entypo } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
+import { deleteDoc, doc } from "firebase/firestore";
+import { database } from "../src/config/fb";
 import { useNavigation } from "@react-navigation/native";
-const Usuario = ({ id, name, rol, email, onEdit }) => {
+
+const Usuario = ({ id, name, rol, email }) => {
   const navigation = useNavigation();
 
-  const ImageRol = (rol) =>{
-    let Imagen;
-    
-    if (rol === "Encargado"){
-      Imagen = require("../assets/encargado.png");
-    }else{
-      Imagen = require("../assets/empleado.png");
-    }
-    return Imagen;
+  const ImageRol = (rol) => {
+    return rol === "Encargado"
+      ? require("../assets/encargado.png")
+      : require("../assets/empleado.png");
   };
 
   const handleDelete = async () => {
     Alert.alert(
       "Confirmar eliminación",
-      "¿Estás seguro de que deseas eliminar este usuario?",
+      `¿Estás seguro de que deseas eliminar a ${name}?`,
       [
-        {
-          text: "Cancelar",
-          style: "cancel",
-        },
+        { text: "Cancelar", style: "cancel" },
         {
           text: "Eliminar",
+          style: "destructive",
           onPress: async () => {
             try {
               await deleteDoc(doc(database, "usuarios", id));
               Alert.alert("Éxito", "Usuario eliminado correctamente");
             } catch (error) {
-              Alert.alert(
-                "Error",
-                "No se pudo eliminar el usuario. Inténtalo de nuevo."
-              );
+              Alert.alert("Error", "No se pudo eliminar el usuario.");
               console.error("Error al eliminar el usuario:", error);
             }
           },
         },
-      ],
-      { cancelable: true }
+      ]
     );
   };
-const imagenUsuario = ImageRol(rol);
+
+  const imagenUsuario = ImageRol(rol);
+
   return (
-    <View style={styles.celdas}>
-      <View style={styles.leftContainer}>
-        <Image source={imagenUsuario} style={styles.iconUser}></Image>
-        <View style={styles.textContain}>
-          <Text style={styles.txtName}>{name}</Text>
-          <Text style={styles.txtRol}>{rol}</Text>
-        </View>
-      </View>
-      <Menu>
-        <MenuTrigger>
-          <Entypo
-            name="dots-three-vertical"
-            size={25}
-            color="#888"
-            style={styles.icon}
-          />
-        </MenuTrigger>
-        <MenuOptions customStyles={{optionsContainer: { borderRadius: 15}}}>
-          <MenuOption
-            onSelect={() =>
-              navigation.navigate("EditUsuario", {
-                id: id,
-                name: name,
-                email: email,
-                rol: rol,
-              })
-            }
-          >
-            <View style={styles.menuItem}>
-              <AntDesign name="edit" size={20} color="#144E78" />
-              <Text style={styles.menuText}>Editar</Text>
-            </View>
-          </MenuOption>
-          <MenuOption onSelect={handleDelete}>
-            <View style={styles.menuItem}>
-              <AntDesign name="delete" size={20} color="#d9534f" />
-              <Text style={styles.menuText}>Eliminar</Text>
-            </View>
-          </MenuOption>
-        </MenuOptions>
-      </Menu>
-    </View>
+    <Card style={styles.card}>
+      <Card.Title
+        title={name}
+        subtitle={rol}
+        left={(props) => <Avatar.Image {...props} size={40} source={imagenUsuario} />}
+        right={(props) => (
+          <Menu>
+            <MenuTrigger>
+              <IconButton {...props} icon="dots-vertical" />
+            </MenuTrigger>
+            <MenuOptions customStyles={{ optionsContainer: { borderRadius: 15 } }}>
+              <MenuOption
+                onSelect={() =>
+                  navigation.navigate("EditUsuario", { id, name, email, rol })
+                }
+              >
+                <View style={styles.menuOptionContainer}>
+                  <AntDesign name="edit" size={20} color="#144E78" />
+                  <Text style={styles.menuText}>Editar</Text>
+                </View>
+              </MenuOption>
+              <MenuOption onSelect={handleDelete}>
+                <View style={styles.menuOptionContainer}>
+                  <AntDesign name="delete" size={20} color="#d9534f" />
+                  <Text style={styles.menuText}>Eliminar</Text>
+                </View>
+              </MenuOption>
+            </MenuOptions>
+          </Menu>
+        )}
+      />
+    </Card>
   );
 };
 
 export default Usuario;
 
 const styles = StyleSheet.create({
-  celdas: {
-    padding: 10,
-    flexDirection: "row",
-    width: "100%",
-    borderBottomWidth: 1,
-    borderColor: "#ccc",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  leftContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  textContain: {
-    flexDirection: "column",
-  },
-  icon: {
-    padding: 10,
-  },
-  iconUser: {
-    width:35,
-    height:35,
-    margin:10,
-  },
-  
-
-  txtName: {
-    fontSize: 15,
-    fontWeight: "bold",
-  },
-  txtRol: {
-    fontSize: 12,
-  },
-  menuItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 9,
-    paddingHorizontal: 10
+  card: {
+    marginVertical: 5,
+    marginHorizontal: 10,
+    borderRadius: 10,
+    elevation: 0, // Sin sombra en Android
+    shadowColor: "transparent", // Sin sombra en iOS
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0,
+    shadowRadius: 0,
+    backgroundColor: "#F0F0F0",
   },
   menuText: {
-    marginLeft: 10,
     fontSize: 16,
-    fontWeight: '400'
+    marginLeft: 8,
   },
+  menuOptionContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+  },
+  
 });

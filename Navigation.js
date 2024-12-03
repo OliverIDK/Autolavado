@@ -14,27 +14,56 @@ import EditarUsuario from "./screens/EditarUsuario";
 import EditarProducto from "./screens/EditarProducto";
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import TipoVehiculo from "./screens/TipoVehiculo";
+import RegistrarServicio from "./screens/RegistrarServicio";
+import AgregarVehiculo from "./screens/AgregarVehiculo";
+import AgregarServicio from "./screens/AgregarServicio";
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 const MaterialTaps = createMaterialTopTabNavigator();
 function Taps(){
   return(
-    <MaterialTaps.Navigator 
-    screenOptions={{
-      tabBarStyle: {
-        elevation: 0, 
-        shadowOpacity: 0,
-        borderBottomWidth: 0,
-        
-      },
-      headerStyle: {
-        shadowOpacity: 0,
-        elevation: 0,
-      },
-      headerShown: false,
-    }}>
-      <MaterialTaps.Screen name="Servicios" component={Servicios}/>
-      <MaterialTaps.Screen name="Tipo" component={TipoVehiculo} options={{title:"Vehiculos"}}/>
+    <MaterialTaps.Navigator
+      screenOptions={{
+        tabBarStyle: {
+          elevation: 0,
+          shadowOpacity: 0,
+          borderBottomWidth: 0,
+        },
+        headerStyle: {
+          shadowOpacity: 0,
+          elevation: 0,
+        },
+        headerShown: false,
+        tabBarLabelStyle: {
+          fontSize: 14,
+          fontWeight: 'normal',
+        },
+        tabBarActiveTintColor: '#144E78',
+        tabBarInactiveTintColor: '#888',
+        tabBarIndicatorStyle: {
+          backgroundColor: '#144E78',
+        },
+      }}
+    >
+      <MaterialTaps.Screen
+        name="Servicios"
+        component={Servicios}
+        options={{
+          tabBarLabelStyle: {
+            fontWeight: 'bold',
+          },
+        }}
+      />
+      <MaterialTaps.Screen
+        name="Tipo"
+        component={TipoVehiculo}
+        options={{
+          title: 'Vehículos',
+          tabBarLabelStyle: {
+            fontWeight: 'bold',
+          },
+        }}
+      />
     </MaterialTaps.Navigator>
   )
 }
@@ -56,6 +85,24 @@ function MyStack() {
         }}
       />
             <Stack.Screen
+        name="RegistrarServicio"
+        component={RegistrarServicio}
+        options={{
+          title: "Servicio",
+          presentation: "modal",
+          animation: "slide_from_bottom",
+        }}
+      />
+                  <Stack.Screen
+        name="AddServicio"
+        component={AgregarServicio}
+        options={{
+          title: "Servicio",
+          presentation: "modal",
+          animation: "slide_from_bottom",
+        }}
+      />
+            <Stack.Screen
         name="TabGroupEmpleado"
         component={TabGroupEmpleado}
         options={{
@@ -67,6 +114,15 @@ function MyStack() {
         component={AgregarUsuario}
         options={{
           title: "Agregar Usuario",
+          presentation: "modal",
+          animation: "slide_from_bottom",
+        }}
+      />
+            <Stack.Screen
+        name="AgregarVehiculo"
+        component={AgregarVehiculo}
+        options={{
+          title: "Agregar Vehiculo",
           presentation: "modal",
           animation: "slide_from_bottom",
         }}
@@ -128,8 +184,8 @@ function TabGroupAdmin() {
       })}
     >
       <Tab.Screen name="Home" component={Home} />
-      <Tab.Screen name="Usuarios" component={Usuarios} />
-      <Tab.Screen name="Tabs" component={Taps} options={{title:""}} />
+      <Tab.Screen name="Usuarios" component={Usuarios} options={{title:"Empleados"}} />
+      <Tab.Screen name="Tabs" component={Taps} options={{title:"Servicios & Vehiculos"}} />
       <Tab.Screen name="Inventario" component={Inventario} />
       <Tab.Screen name="Reporte" component={Reporte} />
     </Tab.Navigator>

@@ -1,58 +1,111 @@
-import { StyleSheet, Text, View, TouchableOpacity, ImageBackground } from 'react-native';
 import React from 'react';
+import { StyleSheet, View, Text, Alert } from 'react-native';
+import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
+import { AntDesign, Entypo } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import { deleteDoc, doc } from 'firebase/firestore';
+import { database } from '../src/config/fb'; // Asegúrate de que esta ruta sea la correcta
 
-const Servicio = ({ servicios }) => {
-    return (
-        
-        <TouchableOpacity style={[styles.card, styles.cardSelected]}>
-            <ImageBackground source={ servicios.image } resizeMode='contain' style={styles.image}></ImageBackground>
-            <Text style={[styles.label, styles.labelSelected]}>{ servicios.name }</Text>
-        </TouchableOpacity>
+const Servicio = ({ id, nombre }) => {
+  const navigation = useNavigation();
 
+  const handleDelete = async () => {
+    // Verificar si el ID está disponible
+    if (!id) {
+      Alert.alert("Error", "El ID del servicio no está disponible.");
+      return;
+    }
+
+    console.log("ID del servicio:", id); // Verifica que el id es el esperado
+
+    Alert.alert(
+      "Confirmar eliminación",
+      "¿Estás seguro de que deseas eliminar este servicio?",
+      [
+        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Eliminar",
+          onPress: async () => {
+            try {
+              // Elimina el servicio de Firestore usando el ID del servicio
+              await deleteDoc(doc(database, "servicios", id));
+              Alert.alert("Éxito", "Servicio eliminado correctamente");
+            } catch (error) {
+              // Muestra detalles del error
+              Alert.alert("Error", "No se pudo eliminar el servicio. Inténtalo de nuevo.");
+              console.error("Error al eliminar el servicio:", error.message); // Muestra el mensaje de error
+            }
+          },
+        },
+      ],
+      { cancelable: true }
     );
+  };
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.productInfo}>
+        <View style={styles.textContainer}>
+          <Text style={styles.productoText}>{nombre || "Nombre no disponible"}</Text>
+        </View>
+        <Menu>
+          <MenuTrigger>
+            <Entypo name="dots-three-vertical" size={25} color="#888" style={styles.icon} />
+          </MenuTrigger>
+          <MenuOptions customStyles={{ optionsContainer: { borderRadius: 15 } }}>
+            <MenuOption onSelect={() => navigation.navigate("EditServicio", { id, nombre })}>
+              <View style={styles.menuItem}>
+                <AntDesign name="edit" size={20} color="#144E78" />
+                <Text style={styles.menuText}>Editar</Text>
+              </View>
+            </MenuOption>
+            <MenuOption onSelect={handleDelete}>
+              <View style={styles.menuItem}>
+                <AntDesign name="delete" size={20} color="#d9534f" />
+                <Text style={styles.menuText}>Eliminar</Text>
+              </View>
+            </MenuOption>
+          </MenuOptions>
+        </Menu>
+      </View>
+    </View>
+  );
 };
 
 export default Servicio;
 
 const styles = StyleSheet.create({
-    // container: {
-    //     marginBottom: 20,
-    //   },
-    //   title: {
-    //     fontSize: 16,
-    //     fontWeight: 'bold',
-    //     marginBottom: 10,
-    //   },
-    //   scroll: {
-    //     flexDirection: 'row',
-    //   },
-      card: {
-        width: 150,
-        height: 150,
-        alignItems: 'center',
-        justifyContent: 'center',
-        paddingVertical: 15,
-        paddingHorizontal: 20,
-        marginRight: 10,
-        borderRadius: 10,
-        borderWidth: 1,
-        borderColor: '#E0E0E0',
-        backgroundColor: '#FFFFFF',
-      },
-      cardSelected: {
-        backgroundColor: '#007BFF',
-        borderColor: '#0056b3',
-      },
-      image: {
-        width: 80,
-        height: 80
-      },
-      label: {
-        marginTop: 5,
-        fontSize: 14,
-        color: '#333',
-      },
-      labelSelected: {
-        color: '#FFFFFF',
-      },
+  container: {
+    width: "100%",
+    padding: 20,
+    marginVertical: 10,
+    backgroundColor: "#F0F0F0",
+    borderRadius: 5,
+  },
+  productInfo: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  textContainer: {
+    flex: 1,
+  },
+  productoText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#333",
+  },
+  icon: {
+    padding: 10,
+  },
+  menuItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+  },
+  menuText: {
+    marginLeft: 10,
+    fontSize: 16,
+  },
 });
