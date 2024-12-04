@@ -11,9 +11,12 @@ const imageMap = {
   "carroChico": require("../src/Assets/iconosVehiculos/carroChico.png"),
   "carroGrande": require("../src/Assets/iconosVehiculos/carroGrande.png"),
   "carroMediano": require("../src/Assets/iconosVehiculos/carroMediano.png"),
+  "taxiUber": require("../src/Assets/iconosVehiculos/taxi.png"),
+  "moto": require("../src/Assets/iconosVehiculos/moto.png"),
   "cuatri": require("../src/Assets/iconosVehiculos/cuatri.png"),
-  // Puedes añadir más claves y rutas según sea necesario
+  "racer": require("../src/Assets/iconosVehiculos/racer.png"),
 };
+
 
 const Vehiculos = ({ id, name, image }) => {
   const navigation = useNavigation();

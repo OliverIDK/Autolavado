@@ -8,8 +8,12 @@ const imagenes = [
   { id: "carroChico", uri: require("../src/Assets/iconosVehiculos/carroChico.png") },
   { id: "carroGrande", uri: require("../src/Assets/iconosVehiculos/carroGrande.png") },
   { id: "carroMediano", uri: require("../src/Assets/iconosVehiculos/carroMediano.png") },
+  { id: "taxiUber", uri: require("../src/Assets/iconosVehiculos/taxi.png") },
+  { id: "moto", uri: require("../src/Assets/iconosVehiculos/moto.png") },
   { id: "cuatri", uri: require("../src/Assets/iconosVehiculos/cuatri.png") },
+  { id: "racer", uri: require("../src/Assets/iconosVehiculos/racer.png") },
 ];
+
 
 const AgregarVehiculo = ({ navigation }) => {
   const [nombre, setNombre] = useState(""); // Para el nombre del vehículo
@@ -41,8 +45,6 @@ const AgregarVehiculo = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Agregar Tipo de Vehículo</Text>
-      
-      {/* Campo de texto para el nombre */}
       <TextInput
         style={styles.input}
         placeholder="Nombre del vehículo"
@@ -50,22 +52,16 @@ const AgregarVehiculo = ({ navigation }) => {
         onChangeText={setNombre}
       />
 
-      {/* Botón para abrir el modal de selección de imagen */}
       <TouchableOpacity style={styles.btnSelectImage} onPress={() => setModalVisible(true)}>
         <Text style={styles.textButton}>Seleccionar Imagen</Text>
       </TouchableOpacity>
 
-      {/* Mostrar la imagen seleccionada */}
       {imagen && (
         <Image source={imagenes.find(img => img.id === imagen)?.uri} style={styles.selectedImage} />
       )}
-
-      {/* Botón para agregar el vehículo */}
       <TouchableOpacity style={styles.btnAdd} onPress={agregarVehiculo}>
         <Text style={styles.btnAddText}>Agregar Vehículo</Text>
       </TouchableOpacity>
-
-      {/* Modal para seleccionar la imagen */}
       <Modal
         animationType="slide"
         transparent={true}

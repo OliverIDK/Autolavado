@@ -1,180 +1,276 @@
-import { StyleSheet, View, ScrollView, Text, TouchableOpacity , TextInput, Button, Image} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+} from "react-native";
+import React, { useState, useEffect } from "react";
+import { TextInput, PaperProvider } from "react-native-paper";
+import { getDocs, collection } from "firebase/firestore";
+import { database } from "../src/config/fb"; // Asegúrate de que Firestore esté correctamente configurado
 
-import Servicio from '../components/Servicio';
-import Divider from '../components/Divider';
-import Modal from "react-native-modal";
-import DropDownPicker from 'react-native-dropdown-picker';
-import * as ImagePicker from 'expo-image-picker';
-
-import React, { useEffect, useState } from 'react';
-
-import { database, auth } from '../src/config/fb';
+// Mapeo de imágenes de los vehículos (imagen normal y seleccionada)
+const imageMap = {
+  carroChico: {
+    default: require("../src/Assets/iconosVehiculos/carroChico.png"),
+    selected: require("../src/Assets/iconosVehiculos/carroChicoSelected.png"),
+  },
+  carroMediano: {
+    default: require("../src/Assets/iconosVehiculos/carroMediano.png"),
+    selected: require("../src/Assets/iconosVehiculos/carroMedianoSelected.png"),
+  },
+  carroGrande: {
+    default: require("../src/Assets/iconosVehiculos/carroGrande.png"),
+    selected: require("../src/Assets/iconosVehiculos/carroGrandeSelected.png"),
+  },
+  taxiUber: {
+    default: require("../src/Assets/iconosVehiculos/taxi.png"),
+    selected: require("../src/Assets/iconosVehiculos/taxiSelected.png"),
+  },
+  moto: {
+    default: require("../src/Assets/iconosVehiculos/moto.png"),
+    selected: require("../src/Assets/iconosVehiculos/motoSelected.png"),
+  },
+  cuatri: {
+    default: require("../src/Assets/iconosVehiculos/cuatrimoto.png"),
+    selected: require("../src/Assets/iconosVehiculos/cuatrimotoSelected.png"),
+  },
+  racer: {
+    default: require("../src/Assets/iconosVehiculos/racer.png"),
+    selected: require("../src/Assets/iconosVehiculos/racerSelected.png"),
+  },
+};
 
 const RegistrarServicio = () => {
-    
-  // BUSCAR...
-  // IMPLEMENTAR -> IMAGE PICKER
-  // AGREGAR Y MOSTRAR DATOS DE FIREBASE
-  // AGREGAR MONTO Y VISTA DE EXITO
+  const [tiposDeVehiculos, setTiposDeVehiculos] = useState([]); // Datos de los vehículos de Firestore
+  const [selectedButtonId, setSelectedButtonId] = useState(null); // Estado para el botón seleccionado
+  const [text, setText] = useState(""); // Estado para el campo de texto (placas)
+  const ButtonColors = [
+    { id: 1, color: "white" },
+    { id: 2, color: "lightgray" },
+    { id: 3, color: "gray" },
+    { id: 4, color: "black" },
+    { id: 5, color: "red" },
+    { id: 6, color: "blue" },
+    { id: 7, color: "yellow" },
+    { id: 8, color: "orange" },
+    { id: 9, color: "pink" },
+  ];
+  const [selectedColorId, setSelectedColorId] = useState(null);
 
-  // MODAL
-  const [isModalVisible, setModalVisible] = useState(false);
-
-  const toggleModal = () => {
-    setModalVisible(!isModalVisible);
+  // Manejo de selección de color
+  const handleColorPress = (id) => {
+    setSelectedColorId(id);
   };
+  // Obtener los datos de Firestore
+  useEffect(() => {
+    const fetchTiposDeVehiculos = async () => {
+      try {
+        const tiposRef = collection(database, "tiposDeVehiculos");
+        const snapshot = await getDocs(tiposRef);
 
-  // DROPDOWN
-  const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(null);
-  const [items, setItems] = useState([
-      {label: 'Apple', value: 'apple'},
-      {label: 'Banana', value: 'banana'},
-      {label: 'Pear', value: 'pear'},
-  ]);
+        // Mapear y filtrar solo aquellos tipos de vehículos con nombre e imagen válidos
+        const tipos = snapshot.docs.map((doc) => doc.data());
+        const filteredTipos = tipos.filter(
+          (vehicle) => vehicle.name && vehicle.imagen
+        );
 
-  const [servicios, setServicios] = useState([
-    { id: 1, name: 'Moto', image: require("../src/Assets/iconosVehiculos/carroChico.png") },
-    { id: 2, name: 'Sedan', image: require("../src/Assets/iconosVehiculos/carroChico.png") },
-    { id: 3, name: 'Trocón', image: require("../src/Assets/iconosVehiculos/carroChico.png") },
-    { id: 4, name: 'BMW', image: require("../src/Assets/iconosVehiculos/carroChico.png") },
-    { id: 5, name: 'NISSAN', image: require("../src/Assets/iconosVehiculos/carroChico.png") },
-  ]);
-
-  const agregarServicio = () => {
-    const nuevoServicio = {
-      id: servicios.length + 1,
-      name: `Servicio ${servicios.length + 1}`,
-      image: require("../assets/iconosServicios/lavadoInterno.png"),
+        setTiposDeVehiculos(filteredTipos);
+      } catch (error) {
+        console.log("Error al obtener los tipos de vehículos: ", error);
+      }
     };
-    setServicios([...servicios, nuevoServicio]); 
+
+    fetchTiposDeVehiculos();
+  }, []);
+
+  // Manejar la selección del botón
+  const handlePress = (id) => {
+    setSelectedButtonId(id);
   };
+
   return (
-    <View style={styles.scrollContainer}>
-      <Divider />
-      <ScrollView contentContainerStyle={styles.body}>
-
-        <Text style={styles.subHeader}>Selecciona el tipo de vehículo</Text>
-
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.scroll}>
-          {servicios.map((servicio) => (
-            <Servicio key={servicio.id} servicios={servicio} />
-          ))}
-        </ScrollView>
-        
-        <TouchableOpacity style={styles.dropdown}>
-          <Text style={styles.dropdownText}>Tipos de servicios</Text>
-        </TouchableOpacity>
-
-        <DropDownPicker
-          open={open}
-          value={value}
-          items={items}
-          setOpen={setOpen}
-          setValue={setValue}
-          setItems={setItems}
-          placeholder={'Choose a fruit.'}
-          style={styles.dropdown}
-        />
-
-        <Button title="Show modal" onPress={toggleModal} />
-
-        <Modal isVisible={isModalVisible}>
-          <View style={{ flex: 1 }}>
-            <Text>Hello!</Text>
-
-            <Button title="Hide modal" onPress={toggleModal} />
+    <PaperProvider>
+      <View style={styles.container}>
+        <ScrollView>
+          <Text style={styles.textos}>Selecciona un vehículo</Text>
+          <View style={styles.containVehiculo}>
+            <ScrollView horizontal contentContainerStyle={styles.scrollView}>
+              {tiposDeVehiculos.map((vehicle, index) => (
+                <TouchableOpacity
+                  key={index}
+                  style={[
+                    styles.btnVehiculo,
+                    {
+                      backgroundColor:
+                        selectedButtonId === index ? "#1A69DC" : "#E9E9E9",
+                    },
+                  ]}
+                  onPress={() => handlePress(index)}
+                >
+                  <Image
+                    source={
+                      selectedButtonId === index
+                        ? imageMap[vehicle.imagen]?.selected
+                        : imageMap[vehicle.imagen]?.default
+                    }
+                    style={styles.image}
+                  />
+                  <Text
+                    style={[
+                      styles.txtVehiculo,
+                      {
+                        color:
+                          selectedButtonId === index ? "#FFFFFF" : "#6B6B6B",
+                      },
+                    ]}
+                  >
+                    {vehicle.name}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
           </View>
-        </Modal>
 
-        <View>
-        <Modal isVisible={false}>
-          <View style={{ flex: 1 }}>
-            <Text>I am the modal content!</Text>
+          {/* Campo de entrada de texto para las placas */}
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.inputPlacas}
+              label="Modelo"
+              placeholder="Ej. Mercedes"
+              value={text}
+              onChangeText={setText}
+              mode="outlined"
+              activeOutlineColor="#1A69DC"
+              outlineColor="#ccc"
+              outlineStyle={{
+                borderRadius: 12,
+                borderWidth: 1.5,
+              }}
+              theme={{
+                colors: {
+                  background: "#fff",
+                  placeholder: "#555",
+                  text: "#555",
+                },
+              }}
+            />
+            <TextInput
+              style={styles.inputPlacas}
+              label="Placas"
+              placeholder="Ej. JW-60-261"
+              value={text}
+              onChangeText={setText}
+              mode="outlined"
+              activeOutlineColor="#1A69DC"
+              outlineColor="#ccc"
+              outlineStyle={{
+                borderRadius: 12,
+                borderWidth: 1.5,
+              }}
+              theme={{
+                colors: {
+                  background: "#fff",
+                  placeholder: "#555",
+                  text: "#555",
+                },
+              }}
+            />
           </View>
-        </Modal>
-        </View>
-
-        {/* Marca */}
-        <TextInput style={styles.input} placeholder="Marca" placeholderTextColor="#999" />
-
-        {/* Placas */}
-        <TextInput style={styles.input} placeholder="Placas" placeholderTextColor="#999" />
-
-        {/* Selecciona el color */}
-        <Text style={styles.subtitle}>Selecciona el color</Text>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.colorContainer}>
-          {['#FFFFFF', '#C0C0C0', '#000000', '#FF0000', '#0000FF', '#FFFF00', '#F5F5F5', '#008000'].map((color) => (
-            <View key={color} style={[styles.colorCircle, { backgroundColor: color }]} />
-          ))}
+          <Text style={styles.textos}>Selecciona el color</Text>
+          <View style={styles.containColor}>
+            <ScrollView
+              horizontal
+              contentContainerStyle={{
+                gap: 12,
+                paddingHorizontal: 10,
+              }}
+            >
+              {ButtonColors.map((button) => (
+                <TouchableOpacity
+                  key={button.id}
+                  onPress={() => handleColorPress(button.id)} // Maneja la selección de color
+                  style={[
+                    styles.btnColor,
+                    {
+                      backgroundColor: button.color,
+                      borderWidth: selectedColorId === button.id ? 3 : 0.6, // Borde dinámico
+                      borderColor:
+                        selectedColorId === button.id ? "#1A69DC" : "#ccc", // Color del borde
+                    },
+                  ]}
+                />
+              ))}
+            </ScrollView>
+          </View>
         </ScrollView>
-      </ScrollView>
-    </View>
+      </View>
+    </PaperProvider>
   );
-}
+};
 
-export default RegistrarServicio
+export default RegistrarServicio;
 
 const styles = StyleSheet.create({
-    scrollContainer: {
-      flex: 1,
-    },
-    body: {
-      width: '100%',
-      flex: 1,
-      padding: 20,
-      backgroundColor: '#F8F8F8',
-    },
-    scroll: {
-      flexDirection: 'row',
-    },
-    header: {
-      fontSize: 24,
-      fontWeight: 'bold',
-      marginBottom: 20,
-    },
-    subHeader: {
-      fontSize: 16,
-      marginBottom: 10,
-    },
-    subtitle: {
-      fontSize: 16,
-      fontWeight: '600',
-      marginBottom: 10,
-    },
-    dropdown: {
-      backgroundColor: '#E8F0FE',
-      paddingVertical: 15,
-      paddingHorizontal: 10,
-      borderRadius: 10,
-      borderWidth: 1,
-      borderColor: '#E0E0E0',
-      marginBottom: 20,
-    },
-    dropdownText: {
-      fontSize: 14,
-      color: '#333',
-    },
-    input: {
-      backgroundColor: '#FFF',
-      paddingVertical: 15,
-      paddingHorizontal: 10,
-      borderRadius: 10,
-      borderWidth: 1,
-      borderColor: '#E0E0E0',
-      marginBottom: 20,
-    },
-    colorContainer: {
-      display: 'flex',
-      flexDirection: 'row',
-      marginVertical: 10,
-    },
-    colorCircle: {
-      width: 45,
-      height: 45,
-      borderRadius: 25,
-      borderWidth: 1,
-      borderColor: '#E0E0E0',
-      marginRight: 10,
-    },
-  });
+  container: {
+    width: "100%",
+    height: "100%",
+    backgroundColor: "white",
+  },
+  containVehiculo: {
+    display: "flex",
+    width: "100%",
+    height: 125,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginVertical: 20,
+  },
+  btnVehiculo: {
+    width: 150,
+    height: 115,
+    backgroundColor: "white",
+    borderColor: "#ccc",
+    borderWidth: 1,
+    borderRadius: 15,
+    justifyContent: "center",
+    alignItems: "center",
+    marginHorizontal: 10,
+  },
+  txtVehiculo: {
+    fontSize: 16,
+    textAlign: "center",
+    fontWeight: "bold",
+  },
+  image: {
+    width: 70,
+    height: 70,
+  },
+  scrollView: {
+    flexDirection: "row",
+  },
+  textos: {
+    marginHorizontal: 15,
+    fontWeight: "bold",
+  },
+  inputContainer: {
+    marginHorizontal: 15,
+  },
+  containColor: {
+    width: "100%",
+    height: 40,
+    backgroundColor: "white",
+    flexDirection: "row",
+    marginVertical: 15,
+    marginBottom: 5,
+  },
+  btnColor: {
+    width: 30,
+    height: 30,
+    borderRadius: 50,
+    borderColor: "#ccc",
+    borderWidth: 0.8,
+    marginHorizontal: 6,
+  },
+});

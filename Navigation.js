@@ -82,6 +82,7 @@ function MyStack() {
         component={TabGroupAdmin}
         options={{
           headerShown: false,
+          title:"Volver"
         }}
       />
             <Stack.Screen
@@ -107,6 +108,7 @@ function MyStack() {
         component={TabGroupEmpleado}
         options={{
           headerShown: false,
+          title:"Volver"
         }}
       />
       <Stack.Screen
@@ -183,7 +185,7 @@ function TabGroupAdmin() {
         },
       })}
     >
-      <Tab.Screen name="Home" component={Home} />
+      <Tab.Screen name="Home" component={Home} options={{title:"Actividad"}}/>
       <Tab.Screen name="Usuarios" component={Usuarios} options={{title:"Empleados"}} />
       <Tab.Screen name="Tabs" component={Taps} options={{title:"Servicios & Vehiculos"}} />
       <Tab.Screen name="Inventario" component={Inventario} />

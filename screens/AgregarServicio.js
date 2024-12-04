@@ -21,7 +21,7 @@ const AgregarServicio = ({ navigation }) => {
 
         // Inicializar los precios en un objeto vacío
         const preciosIniciales = tipos.reduce((acc, tipo) => {
-          acc[tipo.id] = ''; // Valor inicial vacío
+          acc[tipo.name] = ''; // Usar el nombre como clave
           return acc;
         }, {});
         setPrecios(preciosIniciales);
@@ -53,8 +53,8 @@ const AgregarServicio = ({ navigation }) => {
       // Crear el nuevo servicio en Firebase
       await addDoc(collection(database, 'servicios'), {
         nombre,
-        precios: Object.keys(precios).reduce((acc, idVehiculo) => {
-          acc[idVehiculo] = parseFloat(precios[idVehiculo]);
+        precios: Object.keys(precios).reduce((acc, tipoVehiculo) => {
+          acc[tipoVehiculo] = { precio: parseFloat(precios[tipoVehiculo]) }; // Estructura deseada
           return acc;
         }, {}),
       });
@@ -77,13 +77,14 @@ const AgregarServicio = ({ navigation }) => {
       />
       {tiposVehiculo.map(tipo => (
         <View key={tipo.id} style={styles.precioContainer}>
+          <Text>{tipo.name}</Text>
           <TextInput
             style={styles.input}
             placeholder={`Precio para ${tipo.name}`}
             keyboardType="numeric"
-            value={precios[tipo.id]}
+            value={precios[tipo.name]}
             onChangeText={value =>
-              setPrecios(prevPrecios => ({ ...prevPrecios, [tipo.id]: value }))
+              setPrecios(prevPrecios => ({ ...prevPrecios, [tipo.name]: value }))
             }
           />
         </View>
@@ -110,6 +111,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   precioContainer: {
-    marginBottom: 20,
   },
 });
