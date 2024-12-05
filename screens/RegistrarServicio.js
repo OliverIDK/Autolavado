@@ -50,7 +50,7 @@ const RegistrarServicio = () => {
       const currentUser = auth.currentUser;
   
       if (currentUser) {
-        const userId = currentUser.uid; // Este es el UID único del usuario logueado
+        const userId = currentUser.uid;
         console.log("UID del usuario logueado:", userId);
       } else {
         console.log("No hay usuario autenticado.");
@@ -65,7 +65,7 @@ const RegistrarServicio = () => {
           return;
         }
   
-        const userId = currentUser.uid; // UID del usuario logueado
+        const userId = currentUser.uid;
   
         const userDoc = await getDocs(collection(database, "usuarios"));
         const currentUserDoc = userDoc.docs.find(

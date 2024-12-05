@@ -1,15 +1,16 @@
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from "react-native";
 import React, { useEffect, useState } from "react";
 import Icon from '@expo/vector-icons/Entypo';
-import Divider from "../components/Divider";
 import { useNavigation } from '@react-navigation/native';
 import { getAuth } from "firebase/auth";
-import { collection, query, where, getDocs } from "firebase/firestore";
-import { database } from "../src/config/fb";
+import { collection, query, where, onSnapshot } from "firebase/firestore";
+import { database } from "../src/config/fb"; // Importa el componente
+import Rservicio from "../components/Rservicio";
 
-const Home = (props) => {
+const Home = () => {
   const navigation = useNavigation();
   const [userName, setUserName] = useState("");
+  const [registroServicios, setRegistroServicios] = useState([]); // Estado para almacenar los datos
 
   useEffect(() => {
     const fetchUserName = async () => {
@@ -21,17 +22,17 @@ const Home = (props) => {
           const usuariosRef = collection(database, "usuarios");
           const q = query(usuariosRef, where("ida", "==", user.uid));
 
-          const querySnapshot = await getDocs(q);
-
-          if (!querySnapshot.empty) {
-            querySnapshot.forEach((doc) => {
-              const userData = doc.data();
-              setUserName(userData.name || "Usuario");
-            });
-          } else {
-            console.log("No se encontró el usuario con ese ID.");
-            setUserName("Usuario");
-          }
+          onSnapshot(q, (querySnapshot) => {
+            if (!querySnapshot.empty) {
+              querySnapshot.forEach((doc) => {
+                const userData = doc.data();
+                setUserName(userData.name || "Usuario");
+              });
+            } else {
+              console.log("No se encontró el usuario con ese ID.");
+              setUserName("Usuario");
+            }
+          });
         } else {
           console.log("No hay un usuario autenticado.");
           setUserName("Usuario");
@@ -42,14 +43,44 @@ const Home = (props) => {
       }
     };
 
+    const fetchRegistroServicios = () => {
+      try {
+        const registroRef = collection(database, "RegistroServicios");
+        
+        // Usar onSnapshot para escuchar cambios en tiempo real
+        onSnapshot(registroRef, (querySnapshot) => {
+          const servicios = [];
+          querySnapshot.forEach((doc) => {
+            servicios.push({ id: doc.id, ...doc.data() });
+          });
+
+          setRegistroServicios(servicios); // Actualiza el estado con los datos obtenidos
+        });
+      } catch (error) {
+        console.error("Error al obtener registros de servicios:", error);
+      }
+    };
+
     fetchUserName();
+    fetchRegistroServicios(); // Llama a la función para obtener los datos en tiempo real
   }, []);
 
   return (
     <View style={styles.container}>
-      
       <Text style={styles.welcomeText}>Hola, {userName}</Text>
-      
+      <ScrollView>
+        {registroServicios.map((servicio) => (
+          <Rservicio
+            key={servicio.id}
+            id={servicio.id}
+            total={servicio.total} // Total cobrado
+            usuario={servicio.usuario} // Usuario actual
+            placas={servicio.placas}
+            color={servicio.color}
+            tipoVehiculo={servicio.tipoVehiculo} // Tipo de vehículo
+          />
+        ))}
+      </ScrollView>
       <TouchableOpacity
         style={styles.btnAdd}
         onPress={() => navigation.navigate("RegistrarServicio")}

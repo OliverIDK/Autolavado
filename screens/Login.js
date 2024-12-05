@@ -92,7 +92,6 @@ const Login = (props) => {
           <TouchableOpacity style={styles.btnSignIn} onPress={logueo}>
             <Text style={styles.btnText}>Iniciar Sesión</Text>
           </TouchableOpacity>
-          <Text style={styles.txtIDKPassword}>¿Has olvidado tu contraseña?</Text>
         </View>
       </View>
     </View>

@@ -83,7 +83,7 @@ const Producto = ({ id, producto, cantidad: initialCantidad, medida }) => {
       <View style={styles.productInfo}>
         <ImageBackground
           style={styles.producto1}
-          source={require("../src/Assets/product1.png")}
+          source={require("../assets/iconInventario.png")}
           resizeMode="contain"
         />
         <View style={styles.linea}></View>
