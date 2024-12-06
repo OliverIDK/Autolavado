@@ -1,6 +1,11 @@
 import React from "react";
 import { StyleSheet, Alert, Text, View, TouchableOpacity } from "react-native";
-import { Menu, MenuOptions, MenuOption, MenuTrigger } from "react-native-popup-menu";
+import {
+  Menu,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger,
+} from "react-native-popup-menu";
 import { AntDesign, Entypo } from "@expo/vector-icons";
 import { deleteDoc, doc } from "firebase/firestore";
 import { database } from "../src/config/fb";
@@ -22,7 +27,10 @@ const Rservicio = ({ id, total, usuario, placas, color, tipoVehiculo }) => {
               await deleteDoc(doc(database, "RegistroServicios", id));
               Alert.alert("Éxito", "Servicio eliminado correctamente");
             } catch (error) {
-              Alert.alert("Error", "No se pudo eliminar el servicio. Inténtalo de nuevo.");
+              Alert.alert(
+                "Error",
+                "No se pudo eliminar el servicio. Inténtalo de nuevo."
+              );
               console.error("Error al eliminar el servicio:", error);
             }
           },
@@ -44,9 +52,16 @@ const Rservicio = ({ id, total, usuario, placas, color, tipoVehiculo }) => {
         </View>
         <Menu>
           <MenuTrigger>
-            <Entypo name="dots-three-vertical" size={25} color="#888" style={styles.icon} />
+            <Entypo
+              name="dots-three-vertical"
+              size={25}
+              color="#888"
+              style={styles.icon}
+            />
           </MenuTrigger>
-          <MenuOptions customStyles={{ optionsContainer: { borderRadius: 15 } }}>
+          <MenuOptions
+            customStyles={{ optionsContainer: { borderRadius: 15 } }}
+          >
             <MenuOption onSelect={handleDelete}>
               <View style={styles.menuItem}>
                 <AntDesign name="delete" size={20} color="#d9534f" />

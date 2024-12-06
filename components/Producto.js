@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
-  producto1:{
+  producto1: {
     width: 48,
     height: 90,
     paddingLeft: 2,
@@ -180,9 +180,8 @@ const styles = StyleSheet.create({
   linea: {
     width: 1,
     height: 80,
-    backgroundColor: '#ddd',
+    backgroundColor: "#ddd",
     marginHorizontal: 20,
-   
   },
   textContainer: {
     flex: 1,

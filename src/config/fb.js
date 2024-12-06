@@ -13,9 +13,7 @@ const firebaseConfig = {
   databaseURL: Constants.expoConfig.extra.databaseURL,
 };
  
-// Inicializa la aplicación de Firebase y almacena la instancia de la app
 const app = initializeApp(firebaseConfig);
 
-// Usa la instancia de la app para inicializar Firestore y Auth
 export const database = getFirestore(app);
 export const auth = getAuth(app);

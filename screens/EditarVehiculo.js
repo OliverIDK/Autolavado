@@ -13,9 +13,18 @@ import { database } from "../src/config/fb";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 
 const imagenes = [
-  { id: "carroChico", uri: require("../src/Assets/iconosVehiculos/carroChico.png") },
-  { id: "carroGrande", uri: require("../src/Assets/iconosVehiculos/carroGrande.png") },
-  { id: "carroMediano", uri: require("../src/Assets/iconosVehiculos/carroMediano.png") },
+  {
+    id: "carroChico",
+    uri: require("../src/Assets/iconosVehiculos/carroChico.png"),
+  },
+  {
+    id: "carroGrande",
+    uri: require("../src/Assets/iconosVehiculos/carroGrande.png"),
+  },
+  {
+    id: "carroMediano",
+    uri: require("../src/Assets/iconosVehiculos/carroMediano.png"),
+  },
   { id: "taxiUber", uri: require("../src/Assets/iconosVehiculos/taxi.png") },
   { id: "moto", uri: require("../src/Assets/iconosVehiculos/moto.png") },
   { id: "cuatri", uri: require("../src/Assets/iconosVehiculos/cuatri.png") },
@@ -23,7 +32,7 @@ const imagenes = [
 ];
 
 const EditarVehiculo = ({ route, navigation }) => {
-  const { id } = route.params; // ID del vehículo recibido desde la navegación
+  const { id } = route.params;
   const [nombre, setNombre] = useState("");
   const [imagen, setImagen] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
@@ -67,7 +76,10 @@ const EditarVehiculo = ({ route, navigation }) => {
       navigation.goBack();
     } catch (error) {
       console.error("Error al actualizar vehículo:", error);
-      Alert.alert("Error", "Hubo un problema al actualizar el vehículo. Inténtalo de nuevo.");
+      Alert.alert(
+        "Error",
+        "Hubo un problema al actualizar el vehículo. Inténtalo de nuevo."
+      );
     }
   };
 

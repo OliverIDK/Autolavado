@@ -1,22 +1,26 @@
-import React from 'react';
-import { StyleSheet, View, Text, Alert } from 'react-native';
-import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
-import { AntDesign, Entypo } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
-import { deleteDoc, doc } from 'firebase/firestore';
-import { database } from '../src/config/fb'; // Asegúrate de que esta ruta sea la correcta
+import React from "react";
+import { StyleSheet, View, Text, Alert } from "react-native";
+import {
+  Menu,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger,
+} from "react-native-popup-menu";
+import { AntDesign, Entypo } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import { deleteDoc, doc } from "firebase/firestore";
+import { database } from "../src/config/fb";
 
 const Servicio = ({ id, nombre }) => {
   const navigation = useNavigation();
 
   const handleDelete = async () => {
-    // Verificar si el ID está disponible
     if (!id) {
       Alert.alert("Error", "El ID del servicio no está disponible.");
       return;
     }
 
-    console.log("ID del servicio:", id); // Verifica que el id es el esperado
+    console.log("ID del servicio:", id);
 
     Alert.alert(
       "Confirmar eliminación",
@@ -27,13 +31,14 @@ const Servicio = ({ id, nombre }) => {
           text: "Eliminar",
           onPress: async () => {
             try {
-              // Elimina el servicio de Firestore usando el ID del servicio
               await deleteDoc(doc(database, "servicios", id));
               Alert.alert("Éxito", "Servicio eliminado correctamente");
             } catch (error) {
-              // Muestra detalles del error
-              Alert.alert("Error", "No se pudo eliminar el servicio. Inténtalo de nuevo.");
-              console.error("Error al eliminar el servicio:", error.message); // Muestra el mensaje de error
+              Alert.alert(
+                "Error",
+                "No se pudo eliminar el servicio. Inténtalo de nuevo."
+              );
+              console.error("Error al eliminar el servicio:", error.message);
             }
           },
         },
@@ -46,14 +51,27 @@ const Servicio = ({ id, nombre }) => {
     <View style={styles.container}>
       <View style={styles.productInfo}>
         <View style={styles.textContainer}>
-          <Text style={styles.productoText}>{nombre || "Nombre no disponible"}</Text>
+          <Text style={styles.productoText}>
+            {nombre || "Nombre no disponible"}
+          </Text>
         </View>
         <Menu>
           <MenuTrigger>
-            <Entypo name="dots-three-vertical" size={25} color="#888" style={styles.icon} />
+            <Entypo
+              name="dots-three-vertical"
+              size={25}
+              color="#888"
+              style={styles.icon}
+            />
           </MenuTrigger>
-          <MenuOptions customStyles={{ optionsContainer: { borderRadius: 15 } }}>
-            <MenuOption onSelect={() => navigation.navigate("EditServicio", { id, nombre })}>
+          <MenuOptions
+            customStyles={{ optionsContainer: { borderRadius: 15 } }}
+          >
+            <MenuOption
+              onSelect={() =>
+                navigation.navigate("EditServicio", { id, nombre })
+              }
+            >
               <View style={styles.menuItem}>
                 <AntDesign name="edit" size={20} color="#144E78" />
                 <Text style={styles.menuText}>Editar</Text>

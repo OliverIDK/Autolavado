@@ -1,26 +1,41 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View, TextInput, Modal, TouchableOpacity, Image, Alert } from "react-native";
-import { database } from "../src/config/fb"; // Asegúrate de tener la configuración de Firebase correcta
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  Modal,
+  TouchableOpacity,
+  Image,
+  Alert,
+} from "react-native";
+import { database } from "../src/config/fb";
 import { collection, addDoc } from "firebase/firestore";
 
-// Listado de imágenes locales predefinidas con sus identificadores
 const imagenes = [
-  { id: "carroChico", uri: require("../src/Assets/iconosVehiculos/carroChico.png") },
-  { id: "carroGrande", uri: require("../src/Assets/iconosVehiculos/carroGrande.png") },
-  { id: "carroMediano", uri: require("../src/Assets/iconosVehiculos/carroMediano.png") },
+  {
+    id: "carroChico",
+    uri: require("../src/Assets/iconosVehiculos/carroChico.png"),
+  },
+  {
+    id: "carroGrande",
+    uri: require("../src/Assets/iconosVehiculos/carroGrande.png"),
+  },
+  {
+    id: "carroMediano",
+    uri: require("../src/Assets/iconosVehiculos/carroMediano.png"),
+  },
   { id: "taxiUber", uri: require("../src/Assets/iconosVehiculos/taxi.png") },
   { id: "moto", uri: require("../src/Assets/iconosVehiculos/moto.png") },
   { id: "cuatri", uri: require("../src/Assets/iconosVehiculos/cuatri.png") },
   { id: "racer", uri: require("../src/Assets/iconosVehiculos/racer.png") },
 ];
 
-
 const AgregarVehiculo = ({ navigation }) => {
-  const [nombre, setNombre] = useState(""); // Para el nombre del vehículo
-  const [imagen, setImagen] = useState(null); // Para el identificador de la imagen seleccionada
-  const [modalVisible, setModalVisible] = useState(false); // Control de visibilidad del modal
+  const [nombre, setNombre] = useState("");
+  const [imagen, setImagen] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
 
-  // Función para guardar el nuevo tipo de vehículo en Firestore
   const agregarVehiculo = async () => {
     if (!nombre || !imagen) {
       Alert.alert("Error", "Por favor, completa todos los campos.");
@@ -28,17 +43,19 @@ const AgregarVehiculo = ({ navigation }) => {
     }
 
     try {
-      // Guardar el vehículo con el identificador de la imagen en Firestore
       await addDoc(collection(database, "tiposDeVehiculos"), {
         name: nombre,
-        imagen: imagen, // Guardar el identificador de la imagen
+        imagen: imagen,
       });
 
       Alert.alert("Éxito", "Tipo de vehículo agregado correctamente");
-      navigation.goBack(); // Regresar a la pantalla anterior
+      navigation.goBack();
     } catch (error) {
       console.error("Error al agregar vehículo:", error);
-      Alert.alert("Error", "Hubo un problema al agregar el vehículo. Inténtalo de nuevo.");
+      Alert.alert(
+        "Error",
+        "Hubo un problema al agregar el vehículo. Inténtalo de nuevo."
+      );
     }
   };
 
@@ -52,12 +69,18 @@ const AgregarVehiculo = ({ navigation }) => {
         onChangeText={setNombre}
       />
 
-      <TouchableOpacity style={styles.btnSelectImage} onPress={() => setModalVisible(true)}>
+      <TouchableOpacity
+        style={styles.btnSelectImage}
+        onPress={() => setModalVisible(true)}
+      >
         <Text style={styles.textButton}>Seleccionar Imagen</Text>
       </TouchableOpacity>
 
       {imagen && (
-        <Image source={imagenes.find(img => img.id === imagen)?.uri} style={styles.selectedImage} />
+        <Image
+          source={imagenes.find((img) => img.id === imagen)?.uri}
+          style={styles.selectedImage}
+        />
       )}
       <TouchableOpacity style={styles.btnAdd} onPress={agregarVehiculo}>
         <Text style={styles.btnAddText}>Agregar Vehículo</Text>
@@ -72,17 +95,23 @@ const AgregarVehiculo = ({ navigation }) => {
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Seleccionar Imagen</Text>
 
-            {/* Mostrar las imágenes predefinidas */}
             <View style={styles.imageContainer}>
               {imagenes.map((img) => (
-                <TouchableOpacity key={img.id} onPress={() => { setImagen(img.id); setModalVisible(false); }}>
+                <TouchableOpacity
+                  key={img.id}
+                  onPress={() => {
+                    setImagen(img.id);
+                    setModalVisible(false);
+                  }}
+                >
                   <Image source={img.uri} style={styles.modalImage} />
                 </TouchableOpacity>
               ))}
             </View>
-
-            {/* Botón de cerrar modal */}
-            <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.closeModalButton}>
+            <TouchableOpacity
+              onPress={() => setModalVisible(false)}
+              style={styles.closeModalButton}
+            >
               <Text style={styles.closeModalText}>Cerrar</Text>
             </TouchableOpacity>
           </View>

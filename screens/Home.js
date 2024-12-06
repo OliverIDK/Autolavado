@@ -1,16 +1,22 @@
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
 import React, { useEffect, useState } from "react";
-import Icon from '@expo/vector-icons/Entypo';
-import { useNavigation } from '@react-navigation/native';
+import Icon from "@expo/vector-icons/Entypo";
+import { useNavigation } from "@react-navigation/native";
 import { getAuth } from "firebase/auth";
 import { collection, query, where, onSnapshot } from "firebase/firestore";
-import { database } from "../src/config/fb"; // Importa el componente
+import { database } from "../src/config/fb";
 import Rservicio from "../components/Rservicio";
 
 const Home = () => {
   const navigation = useNavigation();
   const [userName, setUserName] = useState("");
-  const [registroServicios, setRegistroServicios] = useState([]); // Estado para almacenar los datos
+  const [registroServicios, setRegistroServicios] = useState([]);
 
   useEffect(() => {
     const fetchUserName = async () => {
@@ -46,15 +52,14 @@ const Home = () => {
     const fetchRegistroServicios = () => {
       try {
         const registroRef = collection(database, "RegistroServicios");
-        
-        // Usar onSnapshot para escuchar cambios en tiempo real
+
         onSnapshot(registroRef, (querySnapshot) => {
           const servicios = [];
           querySnapshot.forEach((doc) => {
             servicios.push({ id: doc.id, ...doc.data() });
           });
 
-          setRegistroServicios(servicios); // Actualiza el estado con los datos obtenidos
+          setRegistroServicios(servicios);
         });
       } catch (error) {
         console.error("Error al obtener registros de servicios:", error);
@@ -62,7 +67,7 @@ const Home = () => {
     };
 
     fetchUserName();
-    fetchRegistroServicios(); // Llama a la función para obtener los datos en tiempo real
+    fetchRegistroServicios();
   }, []);
 
   return (
@@ -73,11 +78,11 @@ const Home = () => {
           <Rservicio
             key={servicio.id}
             id={servicio.id}
-            total={servicio.total} // Total cobrado
-            usuario={servicio.usuario} // Usuario actual
+            total={servicio.total}
+            usuario={servicio.usuario}
             placas={servicio.placas}
             color={servicio.color}
-            tipoVehiculo={servicio.tipoVehiculo} // Tipo de vehículo
+            tipoVehiculo={servicio.tipoVehiculo}
           />
         ))}
       </ScrollView>

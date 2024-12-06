@@ -167,7 +167,7 @@ function MyStack() {
           animation: "slide_from_bottom",
         }}
       />
-            <Stack.Screen
+      <Stack.Screen
         name="EditVehiculo"
         component={EditarVehiculo}
         options={{

@@ -1,15 +1,22 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View, FlatList, Text, Alert, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  View,
+  FlatList,
+  Text,
+  Alert,
+  TouchableOpacity,
+} from "react-native";
 import { collection, onSnapshot } from "firebase/firestore";
 import { database } from "../src/config/fb";
 import { useNavigation } from "@react-navigation/native";
-import Vehiculos from "../components/Vehiculos"; 
+import Vehiculos from "../components/Vehiculos";
 import Icon from "@expo/vector-icons/Entypo";
 
 const TipoVehiculo = () => {
   const navigation = useNavigation();
   const [vehiculos, setVehiculos] = useState([]);
-  const [loading, setLoading] = useState(true); // Estado para manejar la carga
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const vehiculosCollection = collection(database, "tiposDeVehiculos");
@@ -22,12 +29,12 @@ const TipoVehiculo = () => {
           image: doc.data().imagen || "carroChico",
         }));
         setVehiculos(vehiculosData);
-        setLoading(false); // Detenemos el estado de carga una vez se obtienen los datos
+        setLoading(false);
       },
       (error) => {
         Alert.alert("Error", "No se pudieron cargar los vehículos.");
         console.error("Error al cargar vehículos:", error);
-        setLoading(false); // Detenemos la carga incluso si ocurre un error
+        setLoading(false);
       }
     );
 

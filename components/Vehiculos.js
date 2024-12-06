@@ -1,22 +1,32 @@
 import React from "react";
-import { StyleSheet, Alert, Image, Text, View, TouchableOpacity } from "react-native";
-import { Menu, MenuOptions, MenuOption, MenuTrigger } from "react-native-popup-menu";
+import {
+  StyleSheet,
+  Alert,
+  Image,
+  Text,
+  View,
+  TouchableOpacity,
+} from "react-native";
+import {
+  Menu,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger,
+} from "react-native-popup-menu";
 import { AntDesign, Entypo } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { deleteDoc, doc } from "firebase/firestore";
 import { database } from "../src/config/fb";
 
-// Mapa de imágenes locales basado en las claves recibidas desde Firebase
 const imageMap = {
-  "carroChico": require("../src/Assets/iconosVehiculos/carroChico.png"),
-  "carroGrande": require("../src/Assets/iconosVehiculos/carroGrande.png"),
-  "carroMediano": require("../src/Assets/iconosVehiculos/carroMediano.png"),
-  "taxiUber": require("../src/Assets/iconosVehiculos/taxi.png"),
-  "moto": require("../src/Assets/iconosVehiculos/moto.png"),
-  "cuatri": require("../src/Assets/iconosVehiculos/cuatri.png"),
-  "racer": require("../src/Assets/iconosVehiculos/racer.png"),
+  carroChico: require("../src/Assets/iconosVehiculos/carroChico.png"),
+  carroGrande: require("../src/Assets/iconosVehiculos/carroGrande.png"),
+  carroMediano: require("../src/Assets/iconosVehiculos/carroMediano.png"),
+  taxiUber: require("../src/Assets/iconosVehiculos/taxi.png"),
+  moto: require("../src/Assets/iconosVehiculos/moto.png"),
+  cuatri: require("../src/Assets/iconosVehiculos/cuatri.png"),
+  racer: require("../src/Assets/iconosVehiculos/racer.png"),
 };
-
 
 const Vehiculos = ({ id, name, image }) => {
   const navigation = useNavigation();
@@ -34,7 +44,7 @@ const Vehiculos = ({ id, name, image }) => {
           text: "Eliminar",
           onPress: async () => {
             try {
-              await deleteDoc(doc(database, "tiposDeVehiculos", id)); // Cambié el nombre de la colección a "tiposDeVehiculos"
+              await deleteDoc(doc(database, "tiposDeVehiculos", id));
               Alert.alert("Éxito", "Vehículo eliminado correctamente");
             } catch (error) {
               Alert.alert(
@@ -50,20 +60,18 @@ const Vehiculos = ({ id, name, image }) => {
     );
   };
 
-  // Usamos el valor de "image" para obtener la ruta de la imagen correspondiente
-  const imageSource = imageMap[image] || require("../src/Assets/iconosVehiculos/carroChico.png"); // Imagen predeterminada si no se encuentra la clave
+  const imageSource =
+    imageMap[image] || require("../src/Assets/iconosVehiculos/carroChico.png");
 
   return (
     <View style={styles.container}>
       <View style={styles.productInfo}>
-        <Image
-          source={imageSource} // Usamos la imagen mapeada
-          style={styles.cardImage}
-        />
-       <View style={styles.verticalLine}></View>
+        <Image source={imageSource} style={styles.cardImage} />
+        <View style={styles.verticalLine}></View>
         <View style={styles.textContainer}>
-          {/* Aseguramos que el texto esté dentro de <Text> */}
-          <Text style={styles.productoText}>{name || "Nombre no disponible"}</Text>
+          <Text style={styles.productoText}>
+            {name || "Nombre no disponible"}
+          </Text>
         </View>
         <Menu>
           <MenuTrigger>
@@ -78,9 +86,7 @@ const Vehiculos = ({ id, name, image }) => {
             customStyles={{ optionsContainer: { borderRadius: 15 } }}
           >
             <MenuOption
-              onSelect={() =>
-                navigation.navigate("EditVehiculo", { id, name })
-              }
+              onSelect={() => navigation.navigate("EditVehiculo", { id, name })}
             >
               <View style={styles.menuItem}>
                 <AntDesign name="edit" size={20} color="#144E78" />
@@ -122,7 +128,7 @@ const styles = StyleSheet.create({
   },
   verticalLine: {
     width: 1,
-    height: 50, // Altura igual a la de la imagen
+    height: 50,
     backgroundColor: "#ddd",
     marginHorizontal: 15,
   },
@@ -131,7 +137,7 @@ const styles = StyleSheet.create({
   },
   productoText: {
     fontSize: 16,
-    fontWeight: "bold", // En negritas
+    fontWeight: "bold",
     color: "#333",
   },
   icon: {

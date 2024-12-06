@@ -1,5 +1,12 @@
 import {
-  StyleSheet,Text,View,TouchableOpacity,ScrollView,Image, Modal,Alert
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+  Modal,
+  Alert,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { TextInput, PaperProvider } from "react-native-paper";
@@ -11,13 +18,34 @@ import { useNavigation } from "@react-navigation/native";
 import { getAuth } from "firebase/auth";
 
 const imageMap = {
-  carroChico: {default: require("../src/Assets/iconosVehiculos/carroChico.png"), selected: require("../src/Assets/iconosVehiculos/carroChicoSelected.png"),},
-  carroMediano: {default: require("../src/Assets/iconosVehiculos/carroMediano.png"),selected: require("../src/Assets/iconosVehiculos/carroMedianoSelected.png"),},
-  carroGrande: {default: require("../src/Assets/iconosVehiculos/carroGrande.png"),selected: require("../src/Assets/iconosVehiculos/carroGrandeSelected.png"),},
-  taxiUber: {default: require("../src/Assets/iconosVehiculos/taxi.png"),selected: require("../src/Assets/iconosVehiculos/taxiSelected.png"),},
-  moto: {default: require("../src/Assets/iconosVehiculos/moto.png"),selected: require("../src/Assets/iconosVehiculos/motoSelected.png"),},
-  cuatri: {default: require("../src/Assets/iconosVehiculos/cuatrimoto.png"),selected: require("../src/Assets/iconosVehiculos/cuatrimotoSelected.png"),},
-  racer: {default: require("../src/Assets/iconosVehiculos/racer.png"),selected: require("../src/Assets/iconosVehiculos/racerSelected.png"),},
+  carroChico: {
+    default: require("../src/Assets/iconosVehiculos/carroChico.png"),
+    selected: require("../src/Assets/iconosVehiculos/carroChicoSelected.png"),
+  },
+  carroMediano: {
+    default: require("../src/Assets/iconosVehiculos/carroMediano.png"),
+    selected: require("../src/Assets/iconosVehiculos/carroMedianoSelected.png"),
+  },
+  carroGrande: {
+    default: require("../src/Assets/iconosVehiculos/carroGrande.png"),
+    selected: require("../src/Assets/iconosVehiculos/carroGrandeSelected.png"),
+  },
+  taxiUber: {
+    default: require("../src/Assets/iconosVehiculos/taxi.png"),
+    selected: require("../src/Assets/iconosVehiculos/taxiSelected.png"),
+  },
+  moto: {
+    default: require("../src/Assets/iconosVehiculos/moto.png"),
+    selected: require("../src/Assets/iconosVehiculos/motoSelected.png"),
+  },
+  cuatri: {
+    default: require("../src/Assets/iconosVehiculos/cuatrimoto.png"),
+    selected: require("../src/Assets/iconosVehiculos/cuatrimotoSelected.png"),
+  },
+  racer: {
+    default: require("../src/Assets/iconosVehiculos/racer.png"),
+    selected: require("../src/Assets/iconosVehiculos/racerSelected.png"),
+  },
 };
 
 const RegistrarServicio = () => {
@@ -45,33 +73,33 @@ const RegistrarServicio = () => {
         console.error("Error fetching servicios: ", error);
       }
     };
-  
+
     const fetchCurrentUser = async () => {
       const currentUser = auth.currentUser;
-  
+
       if (currentUser) {
         const userId = currentUser.uid;
         console.log("UID del usuario logueado:", userId);
       } else {
         console.log("No hay usuario autenticado.");
       }
-      
+
       try {
         const auth = getAuth();
         const currentUser = auth.currentUser;
-  
+
         if (!currentUser) {
           console.warn("No hay usuario autenticado.");
           return;
         }
-  
+
         const userId = currentUser.uid;
-  
+
         const userDoc = await getDocs(collection(database, "usuarios"));
         const currentUserDoc = userDoc.docs.find(
           (doc) => doc.data().ida === userId
         );
-  
+
         if (currentUserDoc) {
           setCurrentUserName(currentUserDoc.data().name);
         } else {
@@ -81,7 +109,7 @@ const RegistrarServicio = () => {
         console.error("Error fetching current user: ", error);
       }
     };
-  
+
     fetchServicios();
     fetchCurrentUser();
   }, []);
@@ -89,13 +117,12 @@ const RegistrarServicio = () => {
   const toggleService = (id) => {
     setChecks((prev) => ({ ...prev, [id]: !prev[id] }));
   };
-  
+
   const [tiposDeVehiculos, setTiposDeVehiculos] = useState([]);
   const [selectedButtonId, setSelectedButtonId] = useState(null);
   const [text, setText] = useState("");
   const [text2, setText2] = useState("");
   const [text3, setText3] = useState("");
-
 
   const ButtonColors = [
     { id: 1, color: "white" },
@@ -151,7 +178,8 @@ const RegistrarServicio = () => {
     const serviciosSeleccionados = servicios
       .filter((servicio) => checks[servicio.id])
       .map((servicio) => {
-        const precioPorTipo = servicio.precios[tipoVehiculoSeleccionado]?.precio;
+        const precioPorTipo =
+          servicio.precios[tipoVehiculoSeleccionado]?.precio;
         return {
           id: servicio.id,
           nombre: servicio.nombre,
@@ -165,7 +193,9 @@ const RegistrarServicio = () => {
     }
 
     const extras = parseFloat(text3) || 0;
-    const total = serviciosSeleccionados.reduce((acc, curr) => acc + curr.precio, 0) + extras;
+    const total =
+      serviciosSeleccionados.reduce((acc, curr) => acc + curr.precio, 0) +
+      extras;
 
     const nuevoServicio = {
       vehiculo: tipoVehiculoSeleccionado,
@@ -194,7 +224,7 @@ const RegistrarServicio = () => {
       Alert.alert("Error", "Hubo un problema al registrar el servicio.");
     }
   };
-  
+
   return (
     <PaperProvider>
       <View style={styles.container}>
@@ -322,14 +352,14 @@ const RegistrarServicio = () => {
               {ButtonColors.map((button) => (
                 <TouchableOpacity
                   key={button.id}
-                  onPress={() => handleColorPress(button.id)} 
+                  onPress={() => handleColorPress(button.id)}
                   style={[
                     styles.btnColor,
                     {
                       backgroundColor: button.color,
                       borderWidth: selectedColorId === button.id ? 3 : 0.6,
                       borderColor:
-                        selectedColorId === button.id ? "#1A69DC" : "#ccc", 
+                        selectedColorId === button.id ? "#1A69DC" : "#ccc",
                     },
                   ]}
                 />
@@ -337,59 +367,64 @@ const RegistrarServicio = () => {
             </ScrollView>
           </View>
           <View style={styles.containServicio}>
-                    <TouchableOpacity
-                        style={[styles.btnRegistrarServicio, { marginBottom: 20 }]}
-                        onPress={registrarServicio}
-                    >
-
-                        <Text style={{ fontSize: 20, color: 'white', fontWeight: 'bold' }}>Registrar Servicio</Text>
-                    </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.btnRegistrarServicio, { marginBottom: 20 }]}
+              onPress={registrarServicio}
+            >
+              <Text
+                style={{ fontSize: 20, color: "white", fontWeight: "bold" }}
+              >
+                Registrar Servicio
+              </Text>
+            </TouchableOpacity>
           </View>
         </ScrollView>
         <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <TouchableOpacity
-              style={styles.btnCerrarModal}
-              onPress={() => setModalVisible(false)}
-            >
-              <Icon color="gray" size={25} name="circle-with-cross" />
-            </TouchableOpacity>
-            <Text style={styles.modalTitle}>Selecciona los servicios</Text>
-            {servicios.map((servicio) => (
-              <CheckBox
-                key={servicio.id}
-                alignSelf="flex-start"
-                iconRight
-                title={servicio.nombre}
-                checked={checks[servicio.id]}
-                size={25}
-                onPress={() => toggleService(servicio.id)}
-                wrapperStyle={{
-                  flexDirection: "row",
-                  width: "100%",
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => setModalVisible(false)}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <TouchableOpacity
+                style={styles.btnCerrarModal}
+                onPress={() => setModalVisible(false)}
+              >
+                <Icon color="gray" size={25} name="circle-with-cross" />
+              </TouchableOpacity>
+              <Text style={styles.modalTitle}>Selecciona los servicios</Text>
+              {servicios.map((servicio) => (
+                <CheckBox
+                  key={servicio.id}
+                  alignSelf="flex-start"
+                  iconRight
+                  title={servicio.nombre}
+                  checked={checks[servicio.id]}
+                  size={25}
+                  onPress={() => toggleService(servicio.id)}
+                  wrapperStyle={{
+                    flexDirection: "row",
+                    width: "100%",
+                  }}
+                  textStyle={{ flex: 1, textAlign: "left", fontSize: 16 }}
+                />
+              ))}
+              <TouchableOpacity
+                style={styles.btnRegistrarServicio}
+                onPress={() => {
+                  setModalVisible(false);
                 }}
-                textStyle={{ flex: 1, textAlign: "left", fontSize: 16 }}
-              />
-            ))}
-            <TouchableOpacity
-  style={styles.btnRegistrarServicio}
-  onPress={() => {
-    setModalVisible(false);
-  }}
->
-  <Text style={{ fontSize: 18, color: "white", fontWeight: "bold" }}>
-    Agregar
-  </Text>
-</TouchableOpacity>
+              >
+                <Text
+                  style={{ fontSize: 18, color: "white", fontWeight: "bold" }}
+                >
+                  Agregar
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-      </Modal>
+        </Modal>
       </View>
     </PaperProvider>
   );
@@ -435,7 +470,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   textos: {
-    marginTop:5,
+    marginTop: 5,
     marginHorizontal: 15,
     fontWeight: "bold",
   },
@@ -465,7 +500,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     backgroundColor: "#B3D0FB",
     alignItems: "center",
-    marginBottom:10,
+    marginBottom: 10,
   },
   modalOverlay: {
     flex: 1,
@@ -518,20 +553,20 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 3 },
     shadowRadius: 5,
   },
-  inputPlacas:{
-    marginBottom:10
+  inputPlacas: {
+    marginBottom: 10,
   },
   txtTotal: {
     fontSize: 17,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginTop: 30,
-},
-containTotal: {
-  display:"flex"
-},
-txtServicios: {
-  color: 'black',
-  fontSize: 16,
-  textAlign: 'center',
-},
+  },
+  containTotal: {
+    display: "flex",
+  },
+  txtServicios: {
+    color: "black",
+    fontSize: 16,
+    textAlign: "center",
+  },
 });

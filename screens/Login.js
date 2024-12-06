@@ -1,4 +1,12 @@
-import { Alert, StyleSheet, Text, View, TouchableOpacity, ImageBackground, TextInput } from "react-native";
+import {
+  Alert,
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  ImageBackground,
+  TextInput,
+} from "react-native";
 import React, { useState } from "react";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { collection, query, where, getDocs } from "firebase/firestore";
@@ -18,7 +26,11 @@ const Login = (props) => {
     }
 
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
       const user = userCredential.user;
       console.log("User UID:", user.uid);
       const usuariosRef = collection(database, "usuarios");
@@ -28,7 +40,10 @@ const Login = (props) => {
 
       if (querySnapshot.empty) {
         console.log("No se encontró el usuario con ese ID.");
-        Alert.alert("Error", "No se encontró información del usuario. Contacta al administrador.");
+        Alert.alert(
+          "Error",
+          "No se encontró información del usuario. Contacta al administrador."
+        );
         return;
       }
       querySnapshot.forEach((doc) => {

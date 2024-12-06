@@ -1,8 +1,15 @@
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert } from 'react-native';
-import React, { useState, useEffect } from 'react';
-import { database } from '../src/config/fb';
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  TouchableOpacity,
+  Alert,
+} from "react-native";
+import React, { useState, useEffect } from "react";
+import { database } from "../src/config/fb";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { useNavigation, useRoute } from "@react-navigation/native";
 
 const EditarProducto = () => {
   const navigation = useNavigation();
@@ -20,7 +27,7 @@ const EditarProducto = () => {
     }
 
     try {
-      const productRef = doc(database, 'inventario', id);
+      const productRef = doc(database, "inventario", id);
       await updateDoc(productRef, {
         producto: newProducto,
         cantidad: parseInt(newCantidad),
@@ -29,7 +36,10 @@ const EditarProducto = () => {
       Alert.alert("Éxito", "Producto actualizado correctamente");
       navigation.goBack();
     } catch (error) {
-      Alert.alert("Error", "No se pudo actualizar el producto. Inténtalo de nuevo.");
+      Alert.alert(
+        "Error",
+        "No se pudo actualizar el producto. Inténtalo de nuevo."
+      );
       console.error("Error al actualizar el producto:", error);
     }
   };
@@ -70,20 +80,20 @@ export default EditarProducto;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 20,
-    backgroundColor: 'white',
+    backgroundColor: "white",
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 20,
   },
   input: {
-    width: '100%',
+    width: "100%",
     height: 50,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderWidth: 1,
     borderRadius: 8,
     marginBottom: 15,
@@ -91,16 +101,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   btnAdd: {
-    width: '100%',
+    width: "100%",
     height: 50,
-    backgroundColor: '#144E78',
+    backgroundColor: "#144E78",
     borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   btnText: {
-    color: 'white',
+    color: "white",
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 });

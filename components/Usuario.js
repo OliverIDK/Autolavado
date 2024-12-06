@@ -51,13 +51,17 @@ const Usuario = ({ id, name, rol, email }) => {
       <Card.Title
         title={name}
         subtitle={rol}
-        left={(props) => <Avatar.Image {...props} size={40} source={imagenUsuario} />}
+        left={(props) => (
+          <Avatar.Image {...props} size={40} source={imagenUsuario} />
+        )}
         right={(props) => (
           <Menu>
             <MenuTrigger>
               <IconButton {...props} icon="dots-vertical" />
             </MenuTrigger>
-            <MenuOptions customStyles={{ optionsContainer: { borderRadius: 15 } }}>
+            <MenuOptions
+              customStyles={{ optionsContainer: { borderRadius: 15 } }}
+            >
               <MenuOption
                 onSelect={() =>
                   navigation.navigate("EditUsuario", { id, name, email, rol })
@@ -89,8 +93,8 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     marginHorizontal: 10,
     borderRadius: 10,
-    elevation: 0, // Sin sombra en Android
-    shadowColor: "transparent", // Sin sombra en iOS
+    elevation: 0,
+    shadowColor: "transparent",
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0,
     shadowRadius: 0,
@@ -106,5 +110,4 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     paddingHorizontal: 10,
   },
-  
 });
