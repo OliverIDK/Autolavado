@@ -182,9 +182,15 @@ const AgregarUsuario = () => {
           },
         }}
       />
-      <TouchableOpacity style={styles.btnAdd} onPress={handleAddUser}>
-        <Text style={styles.btnText}>Crear</Text>
-      </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.btnAdd, { marginBottom: 20 }]}
+              onPress={handleAddUser}>
+              <Text
+                style={{ fontSize: 20, color: "white", fontWeight: "bold" }}
+              >
+                Agregar
+              </Text>
+            </TouchableOpacity>
     </View>
   );
 };
@@ -210,12 +216,18 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   btnAdd: {
+    marginTop: 15,
     width: "100%",
     height: 50,
-    backgroundColor: "#144E78",
-    borderRadius: 8,
-    alignItems: "center",
     justifyContent: "center",
+    borderRadius: 15,
+    backgroundColor: "#1A69DC",
+    alignItems: "center",
+    elevation: 5,
+    shadowColor: "#000",
+    shadowOpacity: 0.3,
+    shadowOffset: { width: 0, height: 3 },
+    shadowRadius: 5,
   },
   btnText: {
     color: "white",

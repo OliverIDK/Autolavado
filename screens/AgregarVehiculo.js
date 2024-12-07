@@ -234,11 +234,18 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   btnAdd: {
-    backgroundColor: "#144E78",
-    paddingVertical: 15,
-    borderRadius: 5,
+    marginTop: 15,
+    width: "100%",
+    height: 50,
+    justifyContent: "center",
+    borderRadius: 15,
+    backgroundColor: "#1A69DC",
     alignItems: "center",
-    marginTop: 20,
+    elevation: 5,
+    shadowColor: "#000",
+    shadowOpacity: 0.3,
+    shadowOffset: { width: 0, height: 3 },
+    shadowRadius: 5, // Puedes ajustar este valor según necesites más espacio
   },
   btnAddText: {
     color: "#fff",

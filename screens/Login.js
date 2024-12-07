@@ -3,16 +3,17 @@ import {
   StyleSheet,
   Text,
   View,
-  TouchableOpacity,
+  Animated,
   ImageBackground,
   ActivityIndicator,
+  TouchableWithoutFeedback,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { database } from "../src/config/fb";
 import Icon from "@expo/vector-icons/Entypo";
-import { TextInput } from 'react-native-paper';
+import { TextInput } from "react-native-paper";
 
 const auth = getAuth();
 
@@ -23,6 +24,7 @@ const Login = (props) => {
   const [showPassword, setShowPassword] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const [isFocusedPassword, setIsFocusedPassword] = useState(false);
+  const scaleValue = useRef(new Animated.Value(1)).current;
 
   const logueo = async () => {
     if (!email || !password) {
@@ -54,7 +56,6 @@ const Login = (props) => {
 
       querySnapshot.forEach((doc) => {
         const userData = doc.data();
-
         const userRole = userData.rol;
 
         if (userRole === "Encargado") {
@@ -70,6 +71,22 @@ const Login = (props) => {
     } finally {
       setLoading(false);
     }
+  };
+
+  // Animaciones
+  const handlePressIn = () => {
+    Animated.spring(scaleValue, {
+      toValue: 0.9, // Reducir el tamaño
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const handlePressOut = () => {
+    Animated.spring(scaleValue, {
+      toValue: 1, // Restaurar el tamaño
+      useNativeDriver: true,
+    }).start();
+    logueo(); // Ejecutar el inicio de sesión
   };
 
   return (
@@ -167,17 +184,21 @@ const Login = (props) => {
             )
           }
         />
-        <TouchableOpacity
-          style={styles.btnSignIn}
-          onPress={logueo}
+        <TouchableWithoutFeedback
+          onPressIn={handlePressIn}
+          onPressOut={handlePressOut}
           disabled={loading}
         >
-          {loading ? (
-            <ActivityIndicator size="small" color="#fff" />
-          ) : (
-            <Text style={styles.btnText}>Iniciar Sesión</Text>
-          )}
-        </TouchableOpacity>
+          <Animated.View
+            style={[styles.btnSignIn, { transform: [{ scale: scaleValue }] }]}
+          >
+            {loading ? (
+              <ActivityIndicator size="small" color="#fff" />
+            ) : (
+              <Text style={styles.btnText}>Iniciar Sesión</Text>
+            )}
+          </Animated.View>
+        </TouchableWithoutFeedback>
       </View>
     </View>
   );
@@ -213,7 +234,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   inputs: {
-    width: '85%',
+    width: "85%",
     fontSize: 16,
     marginBottom: 20,
   },

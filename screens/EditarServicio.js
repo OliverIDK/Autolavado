@@ -90,6 +90,7 @@ const EditarServicio = ({ route, navigation }) => {
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollView}>
+      <Text style={styles.tipoText}>Servicio</Text>
         <TextInput
           style={styles.input}
           label="Nombre del servicio"
@@ -146,7 +147,11 @@ const EditarServicio = ({ route, navigation }) => {
         ))}
       </ScrollView>
       <TouchableOpacity style={styles.btnSave} onPress={handleGuardarCambios}>
-        <Text style={styles.btnText}>Guardar Cambios</Text>
+      <Text
+                style={{ fontSize: 20, color: "white", fontWeight: "bold" }}
+              >
+                Editar
+              </Text>
       </TouchableOpacity>
     </View>
   );
@@ -178,13 +183,18 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   btnSave: {
-    width: "100%", // El botón ahora tiene el mismo width que los inputs
+    marginTop: 15,
+    width: "100%",
     height: 50,
-    backgroundColor: "#144E78",
-    borderRadius: 8,
-    alignItems: "center",
     justifyContent: "center",
-    marginBottom: 20, // Keeps button from sticking to the edge
+    borderRadius: 15,
+    backgroundColor: "#1A69DC",
+    alignItems: "center",
+    elevation: 5,
+    shadowColor: "#000",
+    shadowOpacity: 0.3,
+    shadowOffset: { width: 0, height: 3 },
+    shadowRadius: 5, // Puedes ajustar este valor según necesites más espacio
   },
   btnText: {
     color: "white",

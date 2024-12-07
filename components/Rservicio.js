@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Alert, Text, View, Image } from "react-native";
+import { StyleSheet, Modal, View, Text, Button, Image, ScrollView, Alert } from "react-native";
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from "react-native-popup-menu";
 import { AntDesign } from "@expo/vector-icons";
-import { deleteDoc, doc, getDocs, collection } from "firebase/firestore";
+import { deleteDoc, doc, getDocs, collection, getDoc } from "firebase/firestore";
 import { database } from "../src/config/fb";
 import { Card, IconButton } from "react-native-paper";
 
-// Mapa de imágenes local
 const imageMap = {
   carroChico: require("../src/Assets/iconosVehiculos/carroChico.png"),
   carroGrande: require("../src/Assets/iconosVehiculos/carroGrande.png"),
@@ -18,28 +17,25 @@ const imageMap = {
 };
 
 const Rservicio = ({ id, total, usuario, placas, color, tipoVehiculo, fecha }) => {
-  const [imageSource, setImageSource] = useState(null); // Guardar la imagen
-  const [loading, setLoading] = useState(true); // Indicar si estamos esperando la respuesta de Firestore
+  const [imageSource, setImageSource] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalContent, setModalContent] = useState('');
 
   useEffect(() => {
     const fetchImage = async () => {
       try {
-        // Aquí buscamos el tipo de vehículo en Firestore
         const querySnapshot = await getDocs(collection(database, "tiposDeVehiculos"));
         let imageKey = null;
-
-        // Buscar el nombre del tipo de vehículo y obtener la clave de la imagen
         querySnapshot.forEach((doc) => {
           if (doc.data().name === tipoVehiculo) {
-            imageKey = doc.data().imagen; // Obtenemos la clave de la imagen desde Firestore
+            imageKey = doc.data().imagen;
           }
         });
-
-        // Si encontramos la clave en el mapa, la usamos, si no, imagen por defecto
         setImageSource(imageMap[imageKey] || require("../src/Assets/caroficial.png"));
       } catch (error) {
         console.error("Error al obtener la imagen:", error);
-        setImageSource(require("../src/Assets/caroficial.png")); // Imagen por defecto en caso de error
+        setImageSource(require("../src/Assets/caroficial.png"));
       } finally {
         setLoading(false);
       }
@@ -48,33 +44,73 @@ const Rservicio = ({ id, total, usuario, placas, color, tipoVehiculo, fecha }) =
     fetchImage();
   }, [tipoVehiculo]);
 
-  const handleDelete = async () => {
+  const handleDelete = () => {
     Alert.alert(
-      "Confirmar eliminación",
+      "Eliminar servicio",
       "¿Estás seguro de que deseas eliminar este servicio?",
       [
-        {
-          text: "Cancelar",
-          style: "cancel",
-        },
-        {
-          text: "Eliminar",
-          onPress: async () => {
-            try {
-              await deleteDoc(doc(database, "RegistroServicios", id));
-              Alert.alert("Éxito", "Servicio eliminado correctamente");
-            } catch (error) {
-              Alert.alert(
-                "Error",
-                "No se pudo eliminar el servicio. Inténtalo de nuevo."
-              );
-              console.error("Error al eliminar el servicio:", error);
-            }
-          },
-        },
-      ],
-      { cancelable: true }
+        { text: "Cancelar", style: "cancel" },
+        { text: "Eliminar", onPress: confirmDelete, style: "destructive" }
+      ]
     );
+  };
+
+  const confirmDelete = async () => {
+    try {
+      await deleteDoc(doc(database, "RegistroServicios", id));
+      Alert.alert("Servicio eliminado correctamente");
+    } catch (error) {
+      Alert.alert("Error al eliminar el servicio. Inténtalo de nuevo.");
+    }
+  };
+
+  const handleViewDetails = async () => {
+    try {
+      const docRef = doc(database, "RegistroServicios", id);
+      const docSnap = await getDoc(docRef);
+  
+      if (docSnap.exists()) {
+        const serviceData = docSnap.data();
+        
+        // Formateamos los detalles
+        const serviciosDetails = serviceData.servicios.map((servicio, index) => {
+          return `${index + 1}. ${servicio.nombre} - $${servicio.precio}`;
+        }).join('\n'); // Salto de línea entre los servicios
+        
+        const detalles = {
+          usuario: serviceData.usuario || 'N/A',
+          vehiculo: serviceData.vehiculo || 'N/A',
+          modelo: serviceData.modelo || 'N/A',
+          placas: serviceData.placas || 'N/A',
+          extras: serviceData.extras || 0,
+          fecha: new Date(serviceData.fecha).toLocaleString() || 'N/A',
+          servicios: serviciosDetails || 'Ninguno',
+          total: `$${serviceData.total || 'N/A'}`,
+        };
+
+        // Crear el contenido del modal
+        const detailsArray = [
+          `Empleado: ${detalles.usuario}`,
+          `Vehículo: ${detalles.vehiculo}`,
+          `Modelo: ${detalles.modelo}`,
+          `Placas: ${detalles.placas}`,
+          `Fecha: ${detalles.fecha}`,
+          `Servicios:\n${detalles.servicios}`,
+          `Extras: ${detalles.extras}`,
+          `Total: ${detalles.total}`,
+        ];
+
+        setModalContent(detailsArray.join('\n\n')); // Unir con saltos de línea entre cada sección
+        setModalVisible(true);
+      } else {
+        setModalContent('No se encontró el servicio.');
+        setModalVisible(true);
+      }
+    } catch (error) {
+      console.error("Error al obtener los detalles del servicio:", error);
+      setModalContent('Hubo un problema al obtener los detalles.');
+      setModalVisible(true);
+    }
   };
 
   const formatDate = (dateStr) => {
@@ -88,14 +124,14 @@ const Rservicio = ({ id, total, usuario, placas, color, tipoVehiculo, fecha }) =
   };
 
   if (loading) {
-    return <Text>Cargando imagen...</Text>; // Mensaje mientras cargamos la imagen
+    return <Text>Cargando registros...</Text>;
   }
 
   return (
     <Card style={styles.card}>
       <Card.Title
-        title={usuario} // Mostrar el nombre del usuario como título
-        subtitle={
+        title={usuario} 
+        subtitle={(
           <View style={styles.subtitleContainer}>
             <Text style={styles.subtitleText}>${total}</Text>
             <Text style={styles.subtitleText}>{placas}</Text>
@@ -104,7 +140,7 @@ const Rservicio = ({ id, total, usuario, placas, color, tipoVehiculo, fecha }) =
               <View style={[styles.colorCircle, { backgroundColor: color.toLowerCase() }]} />
             </View>
           </View>
-        }
+        )}
         left={() => (
           <Image
             source={imageSource}
@@ -118,7 +154,13 @@ const Rservicio = ({ id, total, usuario, placas, color, tipoVehiculo, fecha }) =
               <IconButton icon="dots-vertical" size={24} />
             </MenuTrigger>
             <MenuOptions customStyles={{ optionsContainer: { borderRadius: 15 } }}>
-              <MenuOption onSelect={() => handleDelete(usuario)}>
+              <MenuOption onSelect={handleViewDetails}>
+                <View style={styles.menuOptionContainer}>
+                  <AntDesign name="info" size={20} color="#007bff" />
+                  <Text style={styles.menuText}>Ver detalles</Text>
+                </View>
+              </MenuOption>
+              <MenuOption onSelect={handleDelete}>
                 <View style={styles.menuOptionContainer}>
                   <AntDesign name="delete" size={20} color="#d9534f" />
                   <Text style={styles.menuText}>Eliminar</Text>
@@ -131,6 +173,21 @@ const Rservicio = ({ id, total, usuario, placas, color, tipoVehiculo, fecha }) =
       <Card.Content>
         <Text style={styles.text}>{formatDate(fecha)}</Text>
       </Card.Content>
+      <Modal
+        visible={modalVisible}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <ScrollView style={styles.scrollContainer}>
+              <Text style={styles.modalText}>{modalContent}</Text>
+            </ScrollView>
+            <Button title="Cerrar" onPress={() => setModalVisible(false)} />
+          </View>
+        </View>
+      </Modal>
     </Card>
   );
 };
@@ -187,5 +244,29 @@ const styles = StyleSheet.create({
   menuText: {
     fontSize: 16,
     marginLeft: 8,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.5)",
+  },
+  modalContent: {
+    backgroundColor: "white",
+    padding: 20,
+    borderRadius: 10,
+    width: 320,
+    textAlign: "center",
+  },
+  modalText: {
+    fontSize: 16,
+    marginBottom: 20,
+  },
+  scrollContainer: {
+    maxHeight: 300,
+  },
+  modalButtons: {
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
 });
