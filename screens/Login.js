@@ -5,7 +5,6 @@ import {
   View,
   TouchableOpacity,
   ImageBackground,
-  TextInput,
   ActivityIndicator,
 } from "react-native";
 import React, { useState } from "react";
@@ -13,6 +12,7 @@ import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { database } from "../src/config/fb";
 import Icon from "@expo/vector-icons/Entypo";
+import { TextInput } from 'react-native-paper';
 
 const auth = getAuth();
 
@@ -20,6 +20,9 @@ const Login = (props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
+  const [isFocusedPassword, setIsFocusedPassword] = useState(false);
 
   const logueo = async () => {
     if (!email || !password) {
@@ -27,7 +30,7 @@ const Login = (props) => {
       return;
     }
 
-    setLoading(true); 
+    setLoading(true);
 
     try {
       const userCredential = await signInWithEmailAndPassword(
@@ -42,7 +45,6 @@ const Login = (props) => {
       const querySnapshot = await getDocs(q);
 
       if (querySnapshot.empty) {
-        console.log("No se encontró el usuario con ese ID.");
         Alert.alert(
           "Error",
           "No se encontró información del usuario. Contacta al administrador."
@@ -64,7 +66,6 @@ const Login = (props) => {
         }
       });
     } catch (error) {
-      console.error("Login Error:", error);
       Alert.alert("Error", "El usuario o la contraseña son incorrectos");
     } finally {
       setLoading(false);
@@ -82,42 +83,101 @@ const Login = (props) => {
       </View>
       <View style={styles.body}>
         <Text style={styles.textInicio}>¡Bienvenido!</Text>
-        <View style={styles.InputTexts}>
-          <View style={styles.inputContainer}>
-            <Icon name="mail" size={20} color="#888" style={styles.icon} />
-            <TextInput
-              style={styles.input}
-              placeholder="Correo electrónico"
-              placeholderTextColor="#999"
-              onChangeText={(text) => setEmail(text)}
-              keyboardType="email-address"
-              autoCapitalize="none"
-              value={email}
+        <TextInput
+          style={styles.inputs}
+          label="Email"
+          placeholder="Ej. juanito123@gmail.com"
+          value={email}
+          onChangeText={(text) => setEmail(text)}
+          keyboardType="email-address"
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+          mode="outlined"
+          activeOutlineColor="#1A69DC"
+          outlineColor="#ccc"
+          outlineStyle={{
+            borderRadius: 12,
+            borderWidth: 1.5,
+          }}
+          theme={{
+            colors: {
+              background: "#fff",
+              placeholder: "#555",
+              text: "#555",
+            },
+          }}
+          left={
+            <TextInput.Icon
+              icon={() => (
+                <Icon
+                  name="mail"
+                  size={24}
+                  color={isFocused ? "#1A69DC" : "#555"}
+                />
+              )}
             />
-          </View>
-          <View style={styles.inputContainer}>
-            <Icon name="lock" size={20} color="#888" style={styles.icon} />
-            <TextInput
-              style={styles.input}
-              placeholder="Contraseña"
-              placeholderTextColor="#999"
-              onChangeText={(text) => setPassword(text)}
-              secureTextEntry
-              value={password}
+          }
+        />
+        <TextInput
+          style={styles.inputs}
+          label="Contraseña"
+          placeholder="Ingresa tu contraseña"
+          value={password}
+          onChangeText={(password) => setPassword(password)}
+          onFocus={() => setIsFocusedPassword(true)}
+          onBlur={() => setIsFocusedPassword(false)}
+          mode="outlined"
+          secureTextEntry={!showPassword}
+          activeOutlineColor="#1A69DC"
+          outlineColor="#ccc"
+          outlineStyle={{
+            borderRadius: 12,
+            borderWidth: 1.5,
+          }}
+          theme={{
+            colors: {
+              background: "#fff",
+              placeholder: "#555",
+              text: "#555",
+            },
+          }}
+          left={
+            <TextInput.Icon
+              icon={() => (
+                <Icon
+                  name="lock"
+                  size={24}
+                  color={isFocusedPassword ? "#1A69DC" : "#555"}
+                />
+              )}
             />
-          </View>
-          <TouchableOpacity
-            style={styles.btnSignIn}
-            onPress={logueo}
-            disabled={loading}
-          >
-            {loading ? (
-              <ActivityIndicator size="small" color="#fff" />
-            ) : (
-              <Text style={styles.btnText}>Iniciar Sesión</Text>
-            )}
-          </TouchableOpacity>
-        </View>
+          }
+          right={
+            password.length > 0 && (
+              <TextInput.Icon
+                icon={() => (
+                  <Icon
+                    name={showPassword ? "eye-with-line" : "eye"}
+                    size={20}
+                    color={isFocusedPassword ? "#1A69DC" : "#555"}
+                  />
+                )}
+                onPress={() => setShowPassword(!showPassword)}
+              />
+            )
+          }
+        />
+        <TouchableOpacity
+          style={styles.btnSignIn}
+          onPress={logueo}
+          disabled={loading}
+        >
+          {loading ? (
+            <ActivityIndicator size="small" color="#fff" />
+          ) : (
+            <Text style={styles.btnText}>Iniciar Sesión</Text>
+          )}
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -152,28 +212,10 @@ const styles = StyleSheet.create({
     color: "#064557",
     marginBottom: 20,
   },
-  InputTexts: {
-    width: "100%",
-    alignItems: "center",
-  },
-  inputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
-    marginVertical: 10,
-    width: "85%",
-    height: 50,
-    paddingHorizontal: 10,
-  },
-  input: {
-    flex: 1,
+  inputs: {
+    width: '85%',
     fontSize: 16,
-    color: "#333",
-  },
-  icon: {
-    marginRight: 10,
+    marginBottom: 20,
   },
   btnSignIn: {
     marginTop: 20,
