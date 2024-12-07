@@ -111,14 +111,13 @@ const EditarUsuario = () => {
         }}
       />
 
-      {/* Este campo de correo ya no es editable */}
       <TextInput
         style={styles.inputs}
         label="Correo electrónico"
         placeholder="Ej. juanito123@gmail.com"
         keyboardType="email-address"
         value={newEmail}
-        editable={false} // Ahora es solo lectura
+        editable={false}
         mode="outlined"
         activeOutlineColor="#1A69DC"
         outlineColor="#ccc"

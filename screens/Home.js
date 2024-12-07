@@ -69,8 +69,8 @@ const Home = () => {
   useEffect(() => {
     const calcularTotalDia = () => {
       const hoy = new Date();
-      const hoyInicio = new Date(hoy.setHours(0, 0, 0, 0)); // Establecer el inicio del día
-      const hoyFin = new Date(hoy.setHours(23, 59, 59, 999)); // Establecer el fin del día
+      const hoyInicio = new Date(hoy.setHours(0, 0, 0, 0));
+      const hoyFin = new Date(hoy.setHours(23, 59, 59, 999));
 
       let total = 0;
       const serviciosDelDia = registroServicios.filter((servicio) => {
@@ -88,12 +88,11 @@ const Home = () => {
     calcularTotalDia();
   }, [registroServicios]);
 
-  // Filtramos los servicios para el día actual
   const serviciosDelDia = registroServicios.filter((servicio) => {
     const fechaServicio = new Date(servicio.fecha);
     const hoy = new Date();
-    const hoyInicio = new Date(hoy.setHours(0, 0, 0, 0)); // Establecer el inicio del día
-    const hoyFin = new Date(hoy.setHours(23, 59, 59, 999)); // Establecer el fin del día
+    const hoyInicio = new Date(hoy.setHours(0, 0, 0, 0));
+    const hoyFin = new Date(hoy.setHours(23, 59, 59, 999));
     return fechaServicio >= hoyInicio && fechaServicio <= hoyFin;
   });
 

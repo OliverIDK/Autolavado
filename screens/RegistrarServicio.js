@@ -79,7 +79,6 @@ const RegistrarServicio = () => {
 
       if (currentUser) {
         const userId = currentUser.uid;
-        console.log("UID del usuario logueado:", userId);
       } else {
         console.log("No hay usuario autenticado.");
       }
@@ -217,7 +216,6 @@ const RegistrarServicio = () => {
         "Servicio registrado",
         `Se registró el servicio con éxito.\nTotal: $${total.toFixed(2)}`
       );
-      console.log("Servicio registrado en Firestore:", nuevoServicio);
       navigation.goBack();
     } catch (error) {
       console.error("Error al registrar el servicio:", error);

@@ -8,7 +8,7 @@ import {
   Image,
   Alert,
 } from "react-native";
-import { TextInput } from "react-native-paper"; // Usamos TextInput de react-native-paper
+import { TextInput } from "react-native-paper";
 import { database } from "../src/config/fb";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 
@@ -87,7 +87,6 @@ const EditarVehiculo = ({ route, navigation }) => {
     <View style={styles.container}>
       <Text style={styles.title}>Editar Tipo de Vehículo</Text>
 
-      {/* Imagen seleccionada o placeholder */}
       <TouchableOpacity
         style={styles.btnSelectImage}
         onPress={() => setModalVisible(true)}
@@ -104,7 +103,6 @@ const EditarVehiculo = ({ route, navigation }) => {
         )}
       </TouchableOpacity>
 
-      {/* Campo de texto para el nombre del vehículo */}
       <TextInput
         style={styles.input}
         label="Nombre del vehículo"
@@ -127,12 +125,10 @@ const EditarVehiculo = ({ route, navigation }) => {
         }}
       />
 
-      {/* Botón para actualizar vehículo */}
       <TouchableOpacity style={styles.btnAdd} onPress={actualizarVehiculo}>
         <Text style={styles.btnAddText}>Actualizar Vehículo</Text>
       </TouchableOpacity>
 
-      {/* Modal para seleccionar imagen */}
       <Modal
         animationType="slide"
         transparent={true}
@@ -194,30 +190,30 @@ const styles = StyleSheet.create({
   btnSelectImage: {
     justifyContent: "center",
     alignItems: "center",
-    height: 120, // Aumentado
-    width: 120, // Aumentado
+    height: 120,
+    width: 120,
     borderWidth: 1,
     borderColor: "#ccc",
-    borderRadius: 60, // Hace el borde circular
+    borderRadius: 60,
     marginBottom: 20,
     backgroundColor: "#fff",
   },
   placeholderImage: {
     justifyContent: "center",
     alignItems: "center",
-    height: 120, // Igual que la imagen
-    width: 120, // Igual que la imagen
-    borderRadius: 60, // Hace el hueco circular
-    backgroundColor: "#EAEAEA", // Color de fondo para el hueco
+    height: 120,
+    width: 120, 
+    borderRadius: 60,
+    backgroundColor: "#EAEAEA",
   },
   plusIcon: {
-    fontSize: 40, // Aumentamos el tamaño del "+" para que sea más visible
+    fontSize: 40,
     color: "#666",
   },
   selectedImage: {
     width: 120,
     height: 120,
-    borderRadius: 60, // Imagen circular
+    borderRadius: 60,
   },
   modalOverlay: {
     flex: 1,
@@ -271,7 +267,7 @@ const styles = StyleSheet.create({
     shadowColor: "#000",
     shadowOpacity: 0.3,
     shadowOffset: { width: 0, height: 3 },
-    shadowRadius: 5, // Puedes ajustar este valor según necesites más espacio
+    shadowRadius: 5,
   },
   btnAddText: {
     color: "#fff",

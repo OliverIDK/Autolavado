@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   input: {
-    width: "100%", // Esto asegura que el input ocupe el mismo ancho que el botón
+    width: "100%",
     fontSize: 16,
     marginBottom: 15,
   },
@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
     shadowColor: "#000",
     shadowOpacity: 0.3,
     shadowOffset: { width: 0, height: 3 },
-    shadowRadius: 5, // Puedes ajustar este valor según necesites más espacio
+    shadowRadius: 5,
   },
   btnText: {
     color: "white",

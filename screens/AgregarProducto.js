@@ -33,7 +33,6 @@ const AgregarProducto = () => {
   const navigation = useNavigation();
 
   const onSend = async () => {
-    // Validación de campos vacíos
     if (!newProduct.producto || !newProduct.cantidad || !value) {
       Alert.alert("Error", "Todos los campos deben ser completados.");
       return;

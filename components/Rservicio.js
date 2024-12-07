@@ -71,11 +71,9 @@ const Rservicio = ({ id, total, usuario, placas, color, tipoVehiculo, fecha }) =
   
       if (docSnap.exists()) {
         const serviceData = docSnap.data();
-        
-        // Formateamos los detalles
         const serviciosDetails = serviceData.servicios.map((servicio, index) => {
           return `${index + 1}. ${servicio.nombre} - $${servicio.precio}`;
-        }).join('\n'); // Salto de línea entre los servicios
+        }).join('\n');
         
         const detalles = {
           usuario: serviceData.usuario || 'N/A',
@@ -88,7 +86,6 @@ const Rservicio = ({ id, total, usuario, placas, color, tipoVehiculo, fecha }) =
           total: `$${serviceData.total || 'N/A'}`,
         };
 
-        // Crear el contenido del modal
         const detailsArray = [
           `Empleado: ${detalles.usuario}`,
           `Vehículo: ${detalles.vehiculo}`,
@@ -100,7 +97,7 @@ const Rservicio = ({ id, total, usuario, placas, color, tipoVehiculo, fecha }) =
           `Total: ${detalles.total}`,
         ];
 
-        setModalContent(detailsArray.join('\n\n')); // Unir con saltos de línea entre cada sección
+        setModalContent(detailsArray.join('\n\n'));
         setModalVisible(true);
       } else {
         setModalContent('No se encontró el servicio.');

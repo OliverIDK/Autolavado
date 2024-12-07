@@ -73,20 +73,19 @@ const Login = (props) => {
     }
   };
 
-  // Animaciones
   const handlePressIn = () => {
     Animated.spring(scaleValue, {
-      toValue: 0.9, // Reducir el tamaño
+      toValue: 0.9,
       useNativeDriver: true,
     }).start();
   };
 
   const handlePressOut = () => {
     Animated.spring(scaleValue, {
-      toValue: 1, // Restaurar el tamaño
+      toValue: 1,
       useNativeDriver: true,
     }).start();
-    logueo(); // Ejecutar el inicio de sesión
+    logueo();
   };
 
   return (
