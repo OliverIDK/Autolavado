@@ -19,6 +19,8 @@ import AgregarVehiculo from "./screens/AgregarVehiculo";
 import AgregarServicio from "./screens/AgregarServicio";
 import EditarServicio from "./screens/EditarServicio";
 import EditarVehiculo from "./screens/EditarVehiculo";
+import HomeE from "./screens/HomeE";
+import InventarioE from "./screens/InventarioE";
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 const MaterialTaps = createMaterialTopTabNavigator();
@@ -235,17 +237,17 @@ function TabGroupEmpleado() {
         tabBarActiveTintColor: "#144E78",
         tabBarIcon: ({ color, focused, size }) => {
           let iconName;
-          if (route.name == "Home") {
+          if (route.name == "HomeE") {
             iconName = "home";
-          } else if (route.name == "Inventario") {
+          } else if (route.name == "InventarioE") {
             iconName = "clipboard";
           }
           return <Icon name={iconName} color={color} size={size} />;
         },
       })}
     >
-      <Tab.Screen name="Home" component={Home} />
-      <Tab.Screen name="Inventario" component={Inventario} />
+      <Tab.Screen name="HomeE" component={HomeE} options={{title:"Actividad"}}/>
+      <Tab.Screen name="InventarioE" component={InventarioE} options={{title:"Inventario"}}/>
     </Tab.Navigator>
   );
 }

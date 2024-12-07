@@ -378,51 +378,54 @@ const RegistrarServicio = () => {
           </View>
         </ScrollView>
         <Modal
-          animationType="slide"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => setModalVisible(false)}
+  animationType="slide"
+  transparent={true}
+  visible={modalVisible}
+  onRequestClose={() => setModalVisible(false)}
+>
+  <View style={styles.modalOverlay}>
+    <View style={styles.modalContent}>
+      <TouchableOpacity
+        style={styles.btnCerrarModal}
+        onPress={() => setModalVisible(false)}
+      >
+        <Icon color="gray" size={25} name="circle-with-cross" />
+      </TouchableOpacity>
+      <Text style={styles.modalTitle}>Selecciona los servicios</Text>
+      <ScrollView style={styles.scrollCheckboxContainer}>
+        {servicios.map((servicio) => (
+          <CheckBox
+            key={servicio.id}
+            alignSelf="flex-start"
+            iconRight
+            title={servicio.nombre}
+            checked={checks[servicio.id]}
+            size={25}
+            onPress={() => toggleService(servicio.id)}
+            wrapperStyle={{
+              flexDirection: "row",
+              width: "100%",
+            }}
+            textStyle={{ flex: 1, textAlign: "left", fontSize: 16 }}
+          />
+        ))}
+      </ScrollView>
+      <TouchableOpacity
+        style={styles.btnRegistrarServicio}
+        onPress={() => {
+          setModalVisible(false);
+        }}
+      >
+        <Text
+          style={{ fontSize: 18, color: "white", fontWeight: "bold" }}
         >
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalContent}>
-              <TouchableOpacity
-                style={styles.btnCerrarModal}
-                onPress={() => setModalVisible(false)}
-              >
-                <Icon color="gray" size={25} name="circle-with-cross" />
-              </TouchableOpacity>
-              <Text style={styles.modalTitle}>Selecciona los servicios</Text>
-              {servicios.map((servicio) => (
-                <CheckBox
-                  key={servicio.id}
-                  alignSelf="flex-start"
-                  iconRight
-                  title={servicio.nombre}
-                  checked={checks[servicio.id]}
-                  size={25}
-                  onPress={() => toggleService(servicio.id)}
-                  wrapperStyle={{
-                    flexDirection: "row",
-                    width: "100%",
-                  }}
-                  textStyle={{ flex: 1, textAlign: "left", fontSize: 16 }}
-                />
-              ))}
-              <TouchableOpacity
-                style={styles.btnRegistrarServicio}
-                onPress={() => {
-                  setModalVisible(false);
-                }}
-              >
-                <Text
-                  style={{ fontSize: 18, color: "white", fontWeight: "bold" }}
-                >
-                  Agregar
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </Modal>
+          Agregar
+        </Text>
+      </TouchableOpacity>
+    </View>
+  </View>
+</Modal>
+
       </View>
     </PaperProvider>
   );
@@ -500,57 +503,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 10,
   },
-  modalOverlay: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-  modalContent: {
-    backgroundColor: "#fff",
-    paddingTop: 20,
-    borderRadius: 10,
-    alignItems: "center",
-    width: "80%",
-    height: "50%",
-  },
-  modalTitle: {
-    alignSelf: "flex-start",
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 20,
-    color: "#1A69DC",
-    paddingLeft: 25,
-  },
-  btnCerrarModal: {
-    position: "absolute",
-    top: 10,
-    right: 10,
-    backgroundColor: "white",
-    borderRadius: 20,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
-    elevation: 5,
-  },
+
   containServicio: {
     alignItems: "center",
   },
-  btnRegistrarServicio: {
-    marginTop: 15,
-    width: "93%",
-    height: 50,
-    justifyContent: "center",
-    borderRadius: 15,
-    backgroundColor: "#1A69DC",
-    alignItems: "center",
-    elevation: 5,
-    shadowColor: "#000",
-    shadowOpacity: 0.3,
-    shadowOffset: { width: 0, height: 3 },
-    shadowRadius: 5,
-  },
+
   inputPlacas: {
     marginBottom: 10,
   },
@@ -566,5 +523,58 @@ const styles = StyleSheet.create({
     color: "black",
     fontSize: 16,
     textAlign: "center",
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContent: {
+    backgroundColor: "#fff",
+    paddingTop: 20,
+    borderRadius: 10,
+    alignItems: "center",
+    width: "80%",
+    maxHeight: "70%",
+    paddingBottom: 20, 
+  },
+  modalTitle: {
+    alignSelf: "flex-start",
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 20,
+    color: "#1A69DC",
+    paddingLeft: 25,
+  },
+  scrollCheckboxContainer: {
+    maxHeight: 280, 
+    width: "100%",
+  },
+  btnCerrarModal: {
+    position: "absolute",
+    top: 10,
+    right: 10,
+    backgroundColor: "white",
+    borderRadius: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    elevation: 5,
+  },
+  btnRegistrarServicio: {
+    marginTop: 15,
+    width: "93%",
+    height: 50,
+    justifyContent: "center",
+    borderRadius: 15,
+    backgroundColor: "#1A69DC",
+    alignItems: "center",
+    elevation: 5,
+    shadowColor: "#000",
+    shadowOpacity: 0.3,
+    shadowOffset: { width: 0, height: 3 },
+    shadowRadius: 5,
   },
 });
