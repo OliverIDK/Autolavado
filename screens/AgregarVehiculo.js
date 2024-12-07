@@ -3,12 +3,12 @@ import {
   StyleSheet,
   Text,
   View,
-  TextInput,
   Modal,
   TouchableOpacity,
   Image,
   Alert,
 } from "react-native";
+import { TextInput } from "react-native-paper"; // Importa el TextInput de react-native-paper
 import { database } from "../src/config/fb";
 import { collection, addDoc } from "firebase/firestore";
 
@@ -62,29 +62,51 @@ const AgregarVehiculo = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Agregar Tipo de Vehículo</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Nombre del vehículo"
-        value={nombre}
-        onChangeText={setNombre}
-      />
 
+      {/* Botón de imagen y contenedor arriba */}
       <TouchableOpacity
         style={styles.btnSelectImage}
         onPress={() => setModalVisible(true)}
       >
-        <Text style={styles.textButton}>Seleccionar Imagen</Text>
+        {imagen ? (
+          <Image
+            source={imagenes.find((img) => img.id === imagen)?.uri}
+            style={styles.selectedImage}
+          />
+        ) : (
+          <View style={styles.placeholderImage}>
+            <Text style={styles.plusIcon}>+</Text>
+          </View>
+        )}
       </TouchableOpacity>
 
-      {imagen && (
-        <Image
-          source={imagenes.find((img) => img.id === imagen)?.uri}
-          style={styles.selectedImage}
-        />
-      )}
+      {/* Campo de texto para nombre del vehículo */}
+      <TextInput
+        style={styles.input}
+        label="Nombre del vehículo"
+        placeholder="Ej. Carro Compacto"
+        value={nombre}
+        onChangeText={setNombre}
+        mode="outlined"
+        activeOutlineColor="#1A69DC"
+        outlineColor="#ccc"
+        outlineStyle={{
+          borderRadius: 12,
+          borderWidth: 1.5,
+        }}
+        theme={{
+          colors: {
+            background: "#fff",
+            placeholder: "#555",
+            text: "#555",
+          },
+        }}
+      />
+
       <TouchableOpacity style={styles.btnAdd} onPress={agregarVehiculo}>
         <Text style={styles.btnAddText}>Agregar Vehículo</Text>
       </TouchableOpacity>
+
       <Modal
         animationType="slide"
         transparent={true}
@@ -108,6 +130,7 @@ const AgregarVehiculo = ({ navigation }) => {
                 </TouchableOpacity>
               ))}
             </View>
+
             <TouchableOpacity
               onPress={() => setModalVisible(false)}
               style={styles.closeModalButton}
@@ -129,6 +152,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#F8F8F8",
     padding: 20,
     justifyContent: "center",
+    alignItems: "center", // Centra todo el contenido en el contenedor
   },
   title: {
     fontSize: 24,
@@ -138,30 +162,36 @@ const styles = StyleSheet.create({
     color: "#333",
   },
   input: {
-    height: 40,
-    borderColor: "#ccc",
-    borderWidth: 1,
-    borderRadius: 5,
+    width: "100%",
     marginBottom: 20,
-    paddingLeft: 10,
   },
   btnSelectImage: {
-    backgroundColor: "#144E78",
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 20,
+    justifyContent: "center",
     alignItems: "center",
+    height: 120, // Aumentamos el tamaño
+    width: 120, // Aumentamos el tamaño
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 60, // Hace el borde circular
+    marginBottom: 20,
+    backgroundColor: "#fff",
   },
-  textButton: {
-    color: "#fff",
-    fontSize: 16,
+  placeholderImage: {
+    justifyContent: "center",
+    alignItems: "center",
+    height: 120, // Igual que la imagen
+    width: 120, // Igual que la imagen
+    borderRadius: 60, // Hace el hueco circular
+    backgroundColor: "#EAEAEA", // Color de fondo para el hueco
+  },
+  plusIcon: {
+    fontSize: 40, // Aumentamos el tamaño del "+" para que sea más visible
+    color: "#666",
   },
   selectedImage: {
-    width: 100,
-    height: 100,
-    marginBottom: 20,
-    borderRadius: 10,
-    alignSelf: "center",
+    width: 120,
+    height: 120,
+    borderRadius: 60, // Imagen circular
   },
   modalOverlay: {
     flex: 1,

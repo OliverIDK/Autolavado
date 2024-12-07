@@ -1,11 +1,5 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  ScrollView,
-} from "react-native";
 import React, { useEffect, useState } from "react";
+import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from "react-native";
 import Icon from "@expo/vector-icons/Entypo";
 import { useNavigation } from "@react-navigation/native";
 import { getAuth } from "firebase/auth";
@@ -17,6 +11,7 @@ const Home = () => {
   const navigation = useNavigation();
   const [userName, setUserName] = useState("");
   const [registroServicios, setRegistroServicios] = useState([]);
+  const [totalDia, setTotalDia] = useState(0);
 
   useEffect(() => {
     const fetchUserName = async () => {
@@ -35,20 +30,21 @@ const Home = () => {
                 setUserName(userData.name || "Usuario");
               });
             } else {
-              console.log("No se encontró el usuario con ese ID.");
               setUserName("Usuario");
             }
           });
         } else {
-          console.log("No hay un usuario autenticado.");
           setUserName("Usuario");
         }
       } catch (error) {
-        console.error("Error al obtener el nombre del usuario:", error);
         setUserName("Usuario");
       }
     };
 
+    fetchUserName();
+  }, []);
+
+  useEffect(() => {
     const fetchRegistroServicios = () => {
       try {
         const registroRef = collection(database, "RegistroServicios");
@@ -56,7 +52,8 @@ const Home = () => {
         onSnapshot(registroRef, (querySnapshot) => {
           const servicios = [];
           querySnapshot.forEach((doc) => {
-            servicios.push({ id: doc.id, ...doc.data() });
+            const data = doc.data();
+            servicios.push({ id: doc.id, ...data });
           });
 
           setRegistroServicios(servicios);
@@ -66,25 +63,59 @@ const Home = () => {
       }
     };
 
-    fetchUserName();
     fetchRegistroServicios();
   }, []);
+
+  useEffect(() => {
+    const calcularTotalDia = () => {
+      const hoy = new Date();
+      const hoyInicio = new Date(hoy.setHours(0, 0, 0, 0)); // Establecer el inicio del día
+      const hoyFin = new Date(hoy.setHours(23, 59, 59, 999)); // Establecer el fin del día
+
+      let total = 0;
+      const serviciosDelDia = registroServicios.filter((servicio) => {
+        const fechaServicio = new Date(servicio.fecha);
+        return fechaServicio >= hoyInicio && fechaServicio <= hoyFin;
+      });
+
+      serviciosDelDia.forEach((servicio) => {
+        total += parseFloat(servicio.total);
+      });
+
+      setTotalDia(total);
+    };
+
+    calcularTotalDia();
+  }, [registroServicios]);
+
+  // Filtramos los servicios para el día actual
+  const serviciosDelDia = registroServicios.filter((servicio) => {
+    const fechaServicio = new Date(servicio.fecha);
+    const hoy = new Date();
+    const hoyInicio = new Date(hoy.setHours(0, 0, 0, 0)); // Establecer el inicio del día
+    const hoyFin = new Date(hoy.setHours(23, 59, 59, 999)); // Establecer el fin del día
+    return fechaServicio >= hoyInicio && fechaServicio <= hoyFin;
+  });
 
   return (
     <View style={styles.container}>
       <Text style={styles.welcomeText}>Hola, {userName}</Text>
+      <Text style={styles.totalText}>Total de hoy: ${totalDia.toFixed(2)}</Text>
       <ScrollView>
-        {registroServicios.map((servicio) => (
-          <Rservicio
-            key={servicio.id}
-            id={servicio.id}
-            total={servicio.total}
-            usuario={servicio.usuario}
-            placas={servicio.placas}
-            color={servicio.color}
-            tipoVehiculo={servicio.tipoVehiculo}
-          />
-        ))}
+        {serviciosDelDia.map((servicio) => {
+          return (
+            <Rservicio
+              key={servicio.id}
+              id={servicio.id}
+              total={servicio.total}
+              usuario={servicio.usuario}
+              placas={servicio.placas}
+              color={servicio.color}
+              tipoVehiculo={servicio.vehiculo}
+              fecha={servicio.fecha}
+            />
+          );
+        })}
       </ScrollView>
       <TouchableOpacity
         style={styles.btnAdd}
@@ -95,8 +126,6 @@ const Home = () => {
     </View>
   );
 };
-
-export default Home;
 
 const styles = StyleSheet.create({
   container: {
@@ -109,6 +138,12 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: "bold",
     marginBottom: 10,
+  },
+  totalText: {
+    fontSize: 18,
+    marginBottom: 15,
+    fontWeight: "bold",
+    color: "#144E78",
   },
   btnAdd: {
     alignItems: "center",
@@ -125,3 +160,5 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
 });
+
+export default Home;

@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   ImageBackground,
   TextInput,
+  ActivityIndicator,
 } from "react-native";
 import React, { useState } from "react";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
@@ -18,12 +19,15 @@ const auth = getAuth();
 const Login = (props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const logueo = async () => {
     if (!email || !password) {
       Alert.alert("Error", "Por favor, completa todos los campos.");
       return;
     }
+
+    setLoading(true); 
 
     try {
       const userCredential = await signInWithEmailAndPassword(
@@ -32,10 +36,9 @@ const Login = (props) => {
         password
       );
       const user = userCredential.user;
-      console.log("User UID:", user.uid);
+
       const usuariosRef = collection(database, "usuarios");
       const q = query(usuariosRef, where("ida", "==", user.uid));
-
       const querySnapshot = await getDocs(q);
 
       if (querySnapshot.empty) {
@@ -46,18 +49,15 @@ const Login = (props) => {
         );
         return;
       }
+
       querySnapshot.forEach((doc) => {
         const userData = doc.data();
-        console.log("User Data:", userData);
 
         const userRole = userData.rol;
-        console.log("User Role:", userRole);
 
         if (userRole === "Encargado") {
-          console.log("Navigating to AdminTabs...");
           props.navigation.navigate("TabGroupAdmin");
         } else if (userRole === "Empleado") {
-          console.log("Navigating to EmployeeTabs...");
           props.navigation.navigate("TabGroupEmpleado");
         } else {
           Alert.alert("Error", "Rol no reconocido. Contacta al administrador.");
@@ -66,6 +66,8 @@ const Login = (props) => {
     } catch (error) {
       console.error("Login Error:", error);
       Alert.alert("Error", "El usuario o la contraseña son incorrectos");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -104,8 +106,16 @@ const Login = (props) => {
               value={password}
             />
           </View>
-          <TouchableOpacity style={styles.btnSignIn} onPress={logueo}>
-            <Text style={styles.btnText}>Iniciar Sesión</Text>
+          <TouchableOpacity
+            style={styles.btnSignIn}
+            onPress={logueo}
+            disabled={loading}
+          >
+            {loading ? (
+              <ActivityIndicator size="small" color="#fff" />
+            ) : (
+              <Text style={styles.btnText}>Iniciar Sesión</Text>
+            )}
           </TouchableOpacity>
         </View>
       </View>
@@ -179,12 +189,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     textTransform: "uppercase",
-  },
-  txtIDKPassword: {
-    marginTop: 15,
-    color: "#144E78",
-    fontWeight: "bold",
-    fontSize: 14,
   },
 });
 

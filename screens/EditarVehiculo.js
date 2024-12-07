@@ -3,12 +3,12 @@ import {
   StyleSheet,
   Text,
   View,
-  TextInput,
   Modal,
   TouchableOpacity,
   Image,
   Alert,
 } from "react-native";
+import { TextInput } from "react-native-paper"; // Usamos TextInput de react-native-paper
 import { database } from "../src/config/fb";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 
@@ -86,28 +86,53 @@ const EditarVehiculo = ({ route, navigation }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Editar Tipo de Vehículo</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Nombre del vehículo"
-        value={nombre}
-        onChangeText={setNombre}
-      />
+
+      {/* Imagen seleccionada o placeholder */}
       <TouchableOpacity
         style={styles.btnSelectImage}
         onPress={() => setModalVisible(true)}
       >
-        <Text style={styles.textButton}>Seleccionar Imagen</Text>
+        {imagen ? (
+          <Image
+            source={imagenes.find((img) => img.id === imagen)?.uri}
+            style={styles.selectedImage}
+          />
+        ) : (
+          <View style={styles.placeholderImage}>
+            <Text style={styles.plusIcon}>+</Text>
+          </View>
+        )}
       </TouchableOpacity>
 
-      {imagen && (
-        <Image
-          source={imagenes.find((img) => img.id === imagen)?.uri}
-          style={styles.selectedImage}
-        />
-      )}
+      {/* Campo de texto para el nombre del vehículo */}
+      <TextInput
+        style={styles.input}
+        label="Nombre del vehículo"
+        placeholder="Ej. Carro Compacto"
+        value={nombre}
+        onChangeText={setNombre}
+        mode="outlined"
+        activeOutlineColor="#1A69DC"
+        outlineColor="#ccc"
+        outlineStyle={{
+          borderRadius: 12,
+          borderWidth: 1.5,
+        }}
+        theme={{
+          colors: {
+            background: "#fff",
+            placeholder: "#555",
+            text: "#555",
+          },
+        }}
+      />
+
+      {/* Botón para actualizar vehículo */}
       <TouchableOpacity style={styles.btnAdd} onPress={actualizarVehiculo}>
         <Text style={styles.btnAddText}>Actualizar Vehículo</Text>
       </TouchableOpacity>
+
+      {/* Modal para seleccionar imagen */}
       <Modal
         animationType="slide"
         transparent={true}
@@ -117,6 +142,7 @@ const EditarVehiculo = ({ route, navigation }) => {
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Seleccionar Imagen</Text>
+
             <View style={styles.imageContainer}>
               {imagenes.map((img) => (
                 <TouchableOpacity
@@ -130,6 +156,7 @@ const EditarVehiculo = ({ route, navigation }) => {
                 </TouchableOpacity>
               ))}
             </View>
+
             <TouchableOpacity
               onPress={() => setModalVisible(false)}
               style={styles.closeModalButton}
@@ -148,48 +175,49 @@ export default EditarVehiculo;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#F8F8F8",
     padding: 20,
-    backgroundColor: "#fff",
+    justifyContent: "center",
+    alignItems: "center",
   },
   title: {
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 20,
     textAlign: "center",
+    color: "#333",
   },
   input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    padding: 10,
-    borderRadius: 8,
+    width: "100%",
     marginBottom: 20,
   },
   btnSelectImage: {
-    backgroundColor: "#007BFF",
-    padding: 10,
-    borderRadius: 8,
+    justifyContent: "center",
+    alignItems: "center",
+    height: 120, // Aumentado
+    width: 120, // Aumentado
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 60, // Hace el borde circular
     marginBottom: 20,
+    backgroundColor: "#fff",
   },
-  textButton: {
-    color: "#fff",
-    textAlign: "center",
+  placeholderImage: {
+    justifyContent: "center",
+    alignItems: "center",
+    height: 120, // Igual que la imagen
+    width: 120, // Igual que la imagen
+    borderRadius: 60, // Hace el hueco circular
+    backgroundColor: "#EAEAEA", // Color de fondo para el hueco
+  },
+  plusIcon: {
+    fontSize: 40, // Aumentamos el tamaño del "+" para que sea más visible
+    color: "#666",
   },
   selectedImage: {
-    width: 100,
-    height: 100,
-    alignSelf: "center",
-    marginBottom: 20,
-  },
-  btnAdd: {
-    backgroundColor: "#28a745",
-    padding: 15,
-    borderRadius: 8,
-  },
-  btnAddText: {
-    color: "#fff",
-    textAlign: "center",
-    fontSize: 16,
-    fontWeight: "bold",
+    width: 120,
+    height: 120,
+    borderRadius: 60, // Imagen circular
   },
   modalOverlay: {
     flex: 1,
@@ -198,35 +226,48 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   modalContent: {
-    width: "90%",
     backgroundColor: "#fff",
-    borderRadius: 8,
     padding: 20,
+    borderRadius: 10,
     alignItems: "center",
+    width: "80%",
   },
   modalTitle: {
     fontSize: 18,
     fontWeight: "bold",
     marginBottom: 20,
+    color: "#333",
   },
   imageContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
-    justifyContent: "center",
-    marginBottom: 20,
+    justifyContent: "space-around",
   },
   modalImage: {
-    width: 60,
-    height: 60,
-    margin: 5,
+    width: 80,
+    height: 80,
+    margin: 10,
+    borderRadius: 10,
   },
   closeModalButton: {
-    backgroundColor: "#dc3545",
+    marginTop: 20,
     padding: 10,
-    borderRadius: 8,
+    backgroundColor: "#d9534f",
+    borderRadius: 5,
   },
   closeModalText: {
     color: "#fff",
-    textAlign: "center",
+    fontSize: 16,
+  },
+  btnAdd: {
+    backgroundColor: "#144E78",
+    paddingVertical: 15,
+    borderRadius: 5,
+    alignItems: "center",
+    marginTop: 20,
+  },
+  btnAddText: {
+    color: "#fff",
+    fontSize: 18,
   },
 });

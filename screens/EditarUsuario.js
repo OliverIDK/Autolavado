@@ -1,15 +1,9 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  TextInput,
-  TouchableOpacity,
-  Alert,
-} from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity, Alert, Image } from "react-native";
 import React, { useState, useEffect } from "react";
-import { database } from "../src/config/fb";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { TextInput } from "react-native-paper";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import { database } from "../src/config/fb";
+import { doc, updateDoc } from "firebase/firestore";
 
 const EditarUsuario = () => {
   const navigation = useNavigation();
@@ -18,10 +12,29 @@ const EditarUsuario = () => {
 
   const [newName, setNewName] = useState(name);
   const [newEmail, setNewEmail] = useState(email);
-  const [newRol, setNewRol] = useState(rol);
+  const [selectedButtonId, setSelectedButtonId] = useState(rol === "Encargado" ? 1 : 2);
+
+  const ButtonRoles = [
+    {
+      id: 1,
+      imageDefault: require("../src/Assets/iconRoles/Encargado.png"),
+      imageSelected: require("../src/Assets/iconRoles/EncargadoSelected.png"),
+      label: "Encargado",
+    },
+    {
+      id: 2,
+      imageDefault: require("../src/Assets/iconRoles/empleado.png"),
+      imageSelected: require("../src/Assets/iconRoles/empleadoSelected.png"),
+      label: "Empleado",
+    },
+  ];
+
+  const handlePress = (id) => {
+    setSelectedButtonId(id);
+  };
 
   const handleUpdateUser = async () => {
-    if (!newName || !newEmail || !newRol) {
+    if (!newName || !selectedButtonId) {
       Alert.alert("Error", "Todos los campos son requeridos");
       return;
     }
@@ -30,16 +43,12 @@ const EditarUsuario = () => {
       const userRef = doc(database, "usuarios", id);
       await updateDoc(userRef, {
         name: newName,
-        email: newEmail,
-        rol: newRol,
+        rol: ButtonRoles.find((role) => role.id === selectedButtonId).label,
       });
       Alert.alert("Éxito", "Usuario actualizado correctamente");
       navigation.goBack();
     } catch (error) {
-      Alert.alert(
-        "Error",
-        "No se pudo actualizar el usuario. Inténtalo de nuevo."
-      );
+      Alert.alert("Error", "No se pudo actualizar el usuario. Inténtalo de nuevo.");
       console.error("Error al actualizar el usuario:", error);
     }
   };
@@ -48,24 +57,82 @@ const EditarUsuario = () => {
     <View style={styles.container}>
       <Text style={styles.title}>Editar Usuario</Text>
 
+      <View style={styles.containRol}>
+        {ButtonRoles.map((button) => (
+          <TouchableOpacity
+            key={button.id}
+            style={[
+              styles.btnRol,
+              {
+                backgroundColor: selectedButtonId === button.id ? "#1A69DC" : "#E9E9E9",
+              },
+            ]}
+            onPress={() => handlePress(button.id)}
+          >
+            <Image
+              source={selectedButtonId === button.id ? button.imageSelected : button.imageDefault}
+              style={styles.image}
+            />
+            <Text
+              style={[
+                {
+                  fontSize: 16,
+                  textAlign: "center",
+                  fontWeight: "bold",
+                  color: selectedButtonId === button.id ? "#FFFFFF" : "#000000",
+                },
+              ]}
+            >
+              {button.label}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
       <TextInput
-        style={styles.input}
-        placeholder="Nombre"
+        style={styles.inputs}
+        label="Nombre"
+        placeholder="Ej. Juan"
         value={newName}
         onChangeText={setNewName}
+        mode="outlined"
+        activeOutlineColor="#1A69DC"
+        outlineColor="#ccc"
+        outlineStyle={{
+          borderRadius: 12,
+          borderWidth: 1.5,
+        }}
+        theme={{
+          colors: {
+            background: "#fff",
+            placeholder: "#555",
+            text: "#555",
+          },
+        }}
       />
+
+      {/* Este campo de correo ya no es editable */}
       <TextInput
-        style={styles.input}
-        placeholder="Correo electrónico"
+        style={styles.inputs}
+        label="Correo electrónico"
+        placeholder="Ej. juanito123@gmail.com"
         keyboardType="email-address"
         value={newEmail}
-        onChangeText={setNewEmail}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Rol"
-        value={newRol}
-        onChangeText={setNewRol}
+        editable={false} // Ahora es solo lectura
+        mode="outlined"
+        activeOutlineColor="#1A69DC"
+        outlineColor="#ccc"
+        outlineStyle={{
+          borderRadius: 12,
+          borderWidth: 1.5,
+        }}
+        theme={{
+          colors: {
+            background: "#fff",
+            placeholder: "#555",
+            text: "#555",
+          },
+        }}
       />
 
       <TouchableOpacity style={styles.btnAdd} onPress={handleUpdateUser}>
@@ -90,15 +157,10 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 20,
   },
-  input: {
+  inputs: {
     width: "100%",
-    height: 50,
-    borderColor: "#ccc",
-    borderWidth: 1,
-    borderRadius: 8,
-    marginBottom: 15,
-    paddingLeft: 10,
     fontSize: 16,
+    marginBottom: 15,
   },
   btnAdd: {
     width: "100%",
@@ -112,5 +174,28 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 18,
     fontWeight: "bold",
+  },
+  containRol: {
+    display: "flex",
+    width: "100%",
+    height: 125,
+    flexDirection: "row",
+    justifyContent: "center",
+    marginVertical: 15,
+    gap: 20,
+  },
+  btnRol: {
+    width: 150,
+    height: 115,
+    backgroundColor: "white",
+    borderColor: "#ccc",
+    borderWidth: 1,
+    borderRadius: 15,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  image: {
+    width: 70,
+    height: 70,
   },
 });

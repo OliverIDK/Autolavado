@@ -3,18 +3,12 @@ import {
   StyleSheet,
   Text,
   View,
-  TextInput,
-  Button,
   ScrollView,
   Alert,
+  TouchableOpacity,
 } from "react-native";
-import {
-  doc,
-  updateDoc,
-  getDoc,
-  collection,
-  getDocs,
-} from "firebase/firestore";
+import { TextInput } from "react-native-paper";
+import { doc, updateDoc, getDoc, collection, getDocs } from "firebase/firestore";
 import { database } from "../src/config/fb";
 
 const EditarServicio = ({ route, navigation }) => {
@@ -22,12 +16,11 @@ const EditarServicio = ({ route, navigation }) => {
   const [nombre, setNombre] = useState("");
   const [precios, setPrecios] = useState({});
   const [tiposVehiculo, setTiposVehiculo] = useState([]);
+
   useEffect(() => {
     const fetchTiposVehiculo = async () => {
       try {
-        const querySnapshot = await getDocs(
-          collection(database, "tiposDeVehiculos")
-        );
+        const querySnapshot = await getDocs(collection(database, "tiposDeVehiculos"));
         const tipos = querySnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
@@ -95,37 +88,67 @@ const EditarServicio = ({ route, navigation }) => {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <TextInput
-        style={styles.input}
-        placeholder="Nombre del servicio"
-        value={nombre}
-        onChangeText={setNombre}
-      />
-      {tiposVehiculo.map((tipo) => (
-        <View key={tipo.id} style={styles.precioContainer}>
-          <Text>{tipo.name}</Text>
-          <TextInput
-            style={styles.input}
-            placeholder={`Precio para ${tipo.name}`}
-            keyboardType="numeric"
-            value={precios[tipo.name]?.precio?.toString() || ""}
-            onChangeText={(value) => {
-              const precio = value ? parseFloat(value) : "";
-              setPrecios((prevPrecios) => ({
-                ...prevPrecios,
-                [tipo.name]: { precio },
-              }));
-            }}
-          />
-        </View>
-      ))}
-      <Button
-        title="Guardar Cambios"
-        onPress={handleGuardarCambios}
-        color="#144E78"
-      />
-    </ScrollView>
+    <View style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollView}>
+        <TextInput
+          style={styles.input}
+          label="Nombre del servicio"
+          placeholder="Ej. Lavado Completo"
+          value={nombre}
+          onChangeText={setNombre}
+          mode="outlined"
+          activeOutlineColor="#1A69DC"
+          outlineColor="#ccc"
+          outlineStyle={{
+            borderRadius: 12,
+            borderWidth: 1.5,
+          }}
+          theme={{
+            colors: {
+              background: "#fff",
+              placeholder: "#555",
+              text: "#555",
+            },
+          }}
+        />
+        {tiposVehiculo.map((tipo) => (
+          <View key={tipo.id} style={styles.precioContainer}>
+            <Text style={styles.tipoText}>{tipo.name}</Text>
+            <TextInput
+              style={styles.input}
+              label={`Precio para ${tipo.name}`}
+              placeholder="Precio"
+              keyboardType="numeric"
+              value={precios[tipo.name]?.precio?.toString() || ""}
+              onChangeText={(value) => {
+                const precio = value ? parseFloat(value) : "";
+                setPrecios((prevPrecios) => ({
+                  ...prevPrecios,
+                  [tipo.name]: { precio },
+                }));
+              }}
+              mode="outlined"
+              activeOutlineColor="#1A69DC"
+              outlineColor="#ccc"
+              outlineStyle={{
+                borderRadius: 12,
+                borderWidth: 1.5,
+              }}
+              theme={{
+                colors: {
+                  background: "#fff",
+                  placeholder: "#555",
+                  text: "#555",
+                },
+              }}
+            />
+          </View>
+        ))}
+      </ScrollView>
+      <TouchableOpacity style={styles.btnSave} onPress={handleGuardarCambios}>
+        <Text style={styles.btnText}>Guardar Cambios</Text>
+      </TouchableOpacity>
+    </View>
   );
 };
 
@@ -133,19 +156,39 @@ export default EditarServicio;
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
+    flex: 1,
     backgroundColor: "#fff",
-    flexGrow: 1,
+    justifyContent: "space-between",
+    padding:20
+  },
+  scrollView: {
+    padding: 20,
   },
   input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 15,
+    width: "100%", // Esto asegura que el input ocupe el mismo ancho que el botón
     fontSize: 16,
+    marginBottom: 15,
   },
   precioContainer: {
-    marginBottom: 15,
+    marginBottom: 20,
+  },
+  tipoText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 5,
+  },
+  btnSave: {
+    width: "100%", // El botón ahora tiene el mismo width que los inputs
+    height: 50,
+    backgroundColor: "#144E78",
+    borderRadius: 8,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 20, // Keeps button from sticking to the edge
+  },
+  btnText: {
+    color: "white",
+    fontSize: 18,
+    fontWeight: "bold",
   },
 });

@@ -3,11 +3,11 @@ import {
   StyleSheet,
   Text,
   View,
-  TextInput,
-  Button,
   ScrollView,
   Alert,
+  TouchableOpacity,
 } from "react-native";
+import { TextInput } from "react-native-paper";
 import { collection, addDoc, getDocs } from "firebase/firestore";
 import { database } from "../src/config/fb";
 
@@ -19,9 +19,7 @@ const AgregarServicio = ({ navigation }) => {
   useEffect(() => {
     const fetchTiposVehiculo = async () => {
       try {
-        const querySnapshot = await getDocs(
-          collection(database, "tiposDeVehiculos")
-        );
+        const querySnapshot = await getDocs(collection(database, "tiposDeVehiculos"));
         const tipos = querySnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
@@ -74,36 +72,66 @@ const AgregarServicio = ({ navigation }) => {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <TextInput
-        style={styles.input}
-        placeholder="Nombre del servicio"
-        value={nombre}
-        onChangeText={setNombre}
-      />
-      {tiposVehiculo.map((tipo) => (
-        <View key={tipo.id} style={styles.precioContainer}>
-          <Text>{tipo.name}</Text>
-          <TextInput
-            style={styles.input}
-            placeholder={`Precio para ${tipo.name}`}
-            keyboardType="numeric"
-            value={precios[tipo.name]}
-            onChangeText={(value) =>
-              setPrecios((prevPrecios) => ({
-                ...prevPrecios,
-                [tipo.name]: value,
-              }))
-            }
-          />
-        </View>
-      ))}
-      <Button
-        title="Guardar Servicio"
-        onPress={handleGuardarServicio}
-        color="#144E78"
-      />
-    </ScrollView>
+    <View style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollView}>
+        <TextInput
+          style={styles.input}
+          label="Nombre del servicio"
+          placeholder="Ej. Lavado Completo"
+          value={nombre}
+          onChangeText={setNombre}
+          mode="outlined"
+          activeOutlineColor="#1A69DC"
+          outlineColor="#ccc"
+          outlineStyle={{
+            borderRadius: 12,
+            borderWidth: 1.5,
+          }}
+          theme={{
+            colors: {
+              background: "#fff",
+              placeholder: "#555",
+              text: "#555",
+            },
+          }}
+        />
+        {tiposVehiculo.map((tipo) => (
+          <View key={tipo.id} style={styles.precioContainer}>
+            <Text style={styles.tipoText}>{tipo.name}</Text>
+            <TextInput
+              style={styles.input}
+              label={`Precio para ${tipo.name}`}
+              placeholder="Precio"
+              keyboardType="numeric"
+              value={precios[tipo.name]}
+              onChangeText={(value) =>
+                setPrecios((prevPrecios) => ({
+                  ...prevPrecios,
+                  [tipo.name]: value,
+                }))
+              }
+              mode="outlined"
+              activeOutlineColor="#1A69DC"
+              outlineColor="#ccc"
+              outlineStyle={{
+                borderRadius: 12,
+                borderWidth: 1.5,
+              }}
+              theme={{
+                colors: {
+                  background: "#fff",
+                  placeholder: "#555",
+                  text: "#555",
+                },
+              }}
+            />
+          </View>
+        ))}
+      </ScrollView>
+      <TouchableOpacity style={styles.btnSave} onPress={handleGuardarServicio}>
+        <Text style={styles.btnText}>Guardar Servicio</Text>
+      </TouchableOpacity>
+    </View>
   );
 };
 
@@ -111,17 +139,40 @@ export default AgregarServicio;
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
+    flex: 1,
     backgroundColor: "#fff",
-    flexGrow: 1,
+    justifyContent: "space-between",
+    padding: 20,
+  },
+  scrollView: {
+    padding: 20,
   },
   input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 15,
+    width: "100%", // Esto asegura que el input ocupe el mismo ancho que el botón
     fontSize: 16,
+    marginBottom: 15,
   },
-  precioContainer: {},
+  precioContainer: {
+    marginBottom: 20,
+  },
+  tipoText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 5,
+  },
+  btnSave: {
+    width: "100%", // El botón ahora tiene el mismo width que los inputs
+    height: 50,
+    backgroundColor: "#144E78",
+    borderRadius: 8,
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 20, // Asegura que el botón tenga espacio arriba
+    marginBottom: 40, // Puedes ajustar este valor según necesites más espacio
+  },
+  btnText: {
+    color: "white",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
 });
