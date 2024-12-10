@@ -21,6 +21,7 @@ import EditarServicio from "./screens/EditarServicio";
 import EditarVehiculo from "./screens/EditarVehiculo";
 import HomeE from "./screens/HomeE";
 import InventarioE from "./screens/InventarioE";
+import ReporteF from "./screens/ReporteF";
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 const MaterialTaps = createMaterialTopTabNavigator();
@@ -94,6 +95,15 @@ function MyStack() {
         component={RegistrarServicio}
         options={{
           title: "Servicio",
+          presentation: "modal",
+          animation: "slide_from_bottom",
+        }}
+      />
+      <Stack.Screen
+        name="ReporteF"
+        component={ReporteF}
+        options={{
+          title: "Reporte Semanal",
           presentation: "modal",
           animation: "slide_from_bottom",
         }}
@@ -246,8 +256,16 @@ function TabGroupEmpleado() {
         },
       })}
     >
-      <Tab.Screen name="HomeE" component={HomeE} options={{title:"Actividad"}}/>
-      <Tab.Screen name="InventarioE" component={InventarioE} options={{title:"Inventario"}}/>
+      <Tab.Screen
+        name="HomeE"
+        component={HomeE}
+        options={{ title: "Actividad" }}
+      />
+      <Tab.Screen
+        name="InventarioE"
+        component={InventarioE}
+        options={{ title: "Inventario" }}
+      />
     </Tab.Navigator>
   );
 }

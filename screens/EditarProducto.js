@@ -18,12 +18,13 @@ const data = [
   { label: "ml", value: "ml" },
   { label: "Kg", value: "Kg" },
   { label: "g", value: "g" },
+  { label: "U", value: "U" },
 ];
 
 const EditarProducto = () => {
   const route = useRoute();
   const navigation = useNavigation();
-  
+
   const { id, producto, cantidad, medida } = route.params;
 
   const [newProduct, setNewProduct] = useState({
@@ -40,7 +41,7 @@ const EditarProducto = () => {
       const getProductData = async () => {
         const docRef = doc(database, "inventario", id);
         const docSnap = await getDoc(docRef);
-        
+
         if (docSnap.exists()) {
           const data = docSnap.data();
           setNewProduct({
@@ -53,7 +54,7 @@ const EditarProducto = () => {
           Alert.alert("Error", "Producto no encontrado");
         }
       };
-      
+
       getProductData();
     }
   }, [id]);
@@ -160,7 +161,10 @@ const EditarProducto = () => {
           Medida:
         </Text>
         <Dropdown
-          style={[styles.dropdown, isFocus && { borderColor: "#1A69DC", borderWidth: 2 }]}
+          style={[
+            styles.dropdown,
+            isFocus && { borderColor: "#1A69DC", borderWidth: 2 },
+          ]}
           placeholderStyle={styles.placeholderStyle}
           selectedTextStyle={styles.selectedTextStyle}
           inputSearchStyle={styles.inputSearchStyle}
@@ -231,5 +235,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowOffset: { width: 0, height: 3 },
     shadowRadius: 5,
+  },
+  inputSearchStyle: {
+    display: "none",
   },
 });

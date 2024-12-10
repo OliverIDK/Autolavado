@@ -1,11 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
 import Icon from "@expo/vector-icons/Entypo";
 import { useNavigation } from "@react-navigation/native";
 import { getAuth } from "firebase/auth";
 import { collection, query, where, onSnapshot } from "firebase/firestore";
 import { database } from "../src/config/fb";
-import Rservicio from "../components/Rservicio";
+import RservicioE from "../components/RservicioE";
 
 const HomeE = () => {
   const navigation = useNavigation();
@@ -48,9 +54,8 @@ const HomeE = () => {
     const fetchRegistroServicios = () => {
       try {
         const registroRef = collection(database, "RegistroServicios");
-        
+
         if (userName) {
-          // Filtramos los servicios que corresponden al nombre del usuario logueado
           const q = query(registroRef, where("usuario", "==", userName));
 
           onSnapshot(q, (querySnapshot) => {
@@ -69,7 +74,7 @@ const HomeE = () => {
     };
 
     fetchRegistroServicios();
-  }, [userName]);  // Dependencia de `userName`
+  }, [userName]);
 
   useEffect(() => {
     const calcularTotalDia = () => {
@@ -108,7 +113,7 @@ const HomeE = () => {
       <ScrollView>
         {serviciosDelDia.map((servicio) => {
           return (
-            <Rservicio
+            <RservicioE
               key={servicio.id}
               id={servicio.id}
               total={servicio.total}

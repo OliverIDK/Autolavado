@@ -18,6 +18,7 @@ const data = [
   { label: "ml", value: "ml" },
   { label: "Kg", value: "Kg" },
   { label: "g", value: "g" },
+  { label: "U", value: "U" },
 ];
 
 const AgregarProducto = () => {
@@ -233,4 +234,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 3 },
     shadowRadius: 5,
   },
+  inputSearchStyle:{
+    display:"none"
+  }
 });

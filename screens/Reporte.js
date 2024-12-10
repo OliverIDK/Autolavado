@@ -1,5 +1,11 @@
-import React, { useEffect, useState } from "react"; 
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
 import Icon from "@expo/vector-icons/Entypo";
 import { useNavigation } from "@react-navigation/native";
 import { collection, onSnapshot } from "firebase/firestore";
@@ -124,7 +130,9 @@ const Reporte = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.welcomeText}>Gráfica de Servicios (Últimos 7 días)</Text>
+      <Text style={styles.welcomeText}>
+        Gráfica de Servicios (Últimos 7 días)
+      </Text>
       <Text style={styles.totalText}>Total: ${totalDia.toFixed(2)}</Text>
 
       <View style={{ alignItems: "center", justifyContent: "center" }}>
@@ -197,6 +205,7 @@ const Reporte = () => {
 
       <TouchableOpacity
         style={styles.btnAdd}
+        onPress={() => navigation.navigate("ReporteF")}
       >
         <Icon name="circle-with-plus" size={65} color="#144E78" />
       </TouchableOpacity>

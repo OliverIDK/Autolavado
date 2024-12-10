@@ -321,6 +321,7 @@ const RegistrarServicio = () => {
               label="Extras"
               placeholder="Ej. 23"
               value={text3}
+              keyboardType="numeric"
               onChangeText={setText3}
               mode="outlined"
               activeOutlineColor="#1A69DC"
@@ -378,54 +379,53 @@ const RegistrarServicio = () => {
           </View>
         </ScrollView>
         <Modal
-  animationType="slide"
-  transparent={true}
-  visible={modalVisible}
-  onRequestClose={() => setModalVisible(false)}
->
-  <View style={styles.modalOverlay}>
-    <View style={styles.modalContent}>
-      <TouchableOpacity
-        style={styles.btnCerrarModal}
-        onPress={() => setModalVisible(false)}
-      >
-        <Icon color="gray" size={25} name="circle-with-cross" />
-      </TouchableOpacity>
-      <Text style={styles.modalTitle}>Selecciona los servicios</Text>
-      <ScrollView style={styles.scrollCheckboxContainer}>
-        {servicios.map((servicio) => (
-          <CheckBox
-            key={servicio.id}
-            alignSelf="flex-start"
-            iconRight
-            title={servicio.nombre}
-            checked={checks[servicio.id]}
-            size={25}
-            onPress={() => toggleService(servicio.id)}
-            wrapperStyle={{
-              flexDirection: "row",
-              width: "100%",
-            }}
-            textStyle={{ flex: 1, textAlign: "left", fontSize: 16 }}
-          />
-        ))}
-      </ScrollView>
-      <TouchableOpacity
-        style={styles.btnRegistrarServicio}
-        onPress={() => {
-          setModalVisible(false);
-        }}
-      >
-        <Text
-          style={{ fontSize: 18, color: "white", fontWeight: "bold" }}
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => setModalVisible(false)}
         >
-          Agregar
-        </Text>
-      </TouchableOpacity>
-    </View>
-  </View>
-</Modal>
-
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <TouchableOpacity
+                style={styles.btnCerrarModal}
+                onPress={() => setModalVisible(false)}
+              >
+                <Icon color="gray" size={25} name="circle-with-cross" />
+              </TouchableOpacity>
+              <Text style={styles.modalTitle}>Selecciona los servicios</Text>
+              <ScrollView style={styles.scrollCheckboxContainer}>
+                {servicios.map((servicio) => (
+                  <CheckBox
+                    key={servicio.id}
+                    alignSelf="flex-start"
+                    iconRight
+                    title={servicio.nombre}
+                    checked={checks[servicio.id]}
+                    size={25}
+                    onPress={() => toggleService(servicio.id)}
+                    wrapperStyle={{
+                      flexDirection: "row",
+                      width: "100%",
+                    }}
+                    textStyle={{ flex: 1, textAlign: "left", fontSize: 16 }}
+                  />
+                ))}
+              </ScrollView>
+              <TouchableOpacity
+                style={styles.btnRegistrarServicio}
+                onPress={() => {
+                  setModalVisible(false);
+                }}
+              >
+                <Text
+                  style={{ fontSize: 18, color: "white", fontWeight: "bold" }}
+                >
+                  Agregar
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
       </View>
     </PaperProvider>
   );
@@ -537,7 +537,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "80%",
     maxHeight: "70%",
-    paddingBottom: 20, 
+    paddingBottom: 20,
   },
   modalTitle: {
     alignSelf: "flex-start",
@@ -548,7 +548,7 @@ const styles = StyleSheet.create({
     paddingLeft: 25,
   },
   scrollCheckboxContainer: {
-    maxHeight: 280, 
+    maxHeight: 280,
     width: "100%",
   },
   btnCerrarModal: {

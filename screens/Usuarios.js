@@ -2,7 +2,6 @@ import {
   StyleSheet,
   Text,
   View,
-  TextInput,
   TouchableOpacity,
   ScrollView,
 } from "react-native";
@@ -13,46 +12,87 @@ import Usuario from "../components/Usuario";
 import Icon from "@expo/vector-icons/Entypo";
 import Divider from "../components/Divider";
 import { useNavigation } from "@react-navigation/native";
+import { TextInput } from "react-native-paper";
 
 const Usuarios = () => {
   const navigation = useNavigation();
   const [users, setUsers] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredUsers, setFilteredUsers] = useState([]);
+  const [isFocused, setIsFocused] = useState(false);
 
   useEffect(() => {
     const collectionRef = collection(database, "usuarios");
     const q = query(collectionRef);
 
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      setUsers(
-        querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          name: doc.data().name,
-          email: doc.data().email,
-          rol: doc.data().rol,
-        }))
-      );
+      const fetchedUsers = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        name: doc.data().name,
+        email: doc.data().email,
+        rol: doc.data().rol,
+      }));
+      setUsers(fetchedUsers);
+      setFilteredUsers(fetchedUsers);
     });
 
     return unsubscribe;
   }, []);
+
+  const handleSearch = (text) => {
+    setSearchTerm(text);
+    const filtered = users.filter(
+      (user) =>
+        user.name.toLowerCase().includes(text.toLowerCase()) ||
+        user.email.toLowerCase().includes(text.toLowerCase())
+    );
+    setFilteredUsers(filtered);
+  };
 
   return (
     <View style={styles.container}>
       <Divider />
       <View style={styles.header}>
         <View style={styles.inputContainer}>
-          <Icon
-            name="magnifying-glass"
-            size={20}
-            color="#888"
-            style={styles.icon}
+          <TextInput
+            style={styles.inputs}
+            label="Buscar empleado"
+            value={searchTerm}
+            onChangeText={handleSearch}
+            mode="outlined"
+            activeOutlineColor="#1A69DC"
+            outlineColor="#ccc"
+            outlineStyle={{
+              borderRadius: 12,
+              borderWidth: 1.5,
+            }}
+            theme={{
+              colors: {
+                background: "#fff",
+                placeholder: "#555",
+                text: "#555",
+              },
+            }}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
+            left={
+              <TextInput.Icon
+                icon={() => (
+                  <Icon
+                    name="magnifying-glass"
+                    size={24}
+                    color={isFocused ? "#1A69DC" : "#555"}
+                  />
+                )}
+              />
+            }
+            placeholder="Ej. Juan"
           />
-          <TextInput style={styles.input} placeholder="Buscar empleado" />
         </View>
       </View>
       <View style={styles.body}>
         <ScrollView>
-          {users.map((user) => (
+          {filteredUsers.map((user) => (
             <Usuario
               key={user.id}
               id={user.id}
@@ -97,21 +137,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   inputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
-    margin: 15,
     width: 350,
-    height: 50,
+    height: 60,
+    margin: 15,
   },
-  input: {
-    flex: 1,
+  inputs: {
     fontSize: 15,
-  },
-  icon: {
-    padding: 10,
+    height: 50,
   },
   body: {
     width: "100%",
